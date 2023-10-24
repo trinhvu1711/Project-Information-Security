@@ -7,17 +7,21 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class View {
     private JFrame frame;
     private JButton buttonFromClipboard;
-    private JButton buttonFromFile;
-    private JCheckBox checkBoxAlgorithm1;
-    private JCheckBox checkBoxAlgorithm2;
-    private JCheckBox checkBoxAlgorithm3;
-    private JTextField resultField1;
-    private JTextField resultField2;
-    private JTextField resultField3;
+    private JButton buttonFromFile, buttonClose, buttonCalculate,buttonGenerateKey;
+    private Map<JCheckBox, JTextField> checkboxToResultFieldMap = new HashMap<>();
+//    private JCheckBox checkBoxAlgorithm1;
+//    private JCheckBox checkBoxAlgorithm2;
+//    private JCheckBox checkBoxAlgorithm3;
+//    private JTextField resultField1;
+//    private JTextField resultField2;
+//    private JTextField resultField3;
+    private JTextField inputField;
     private JTextField keyField;
     private JComboBox<String> comboBox;
     public View(){
@@ -36,12 +40,12 @@ public class View {
         tabbedPane.addTab("Decrypt", tab2);
         tabbedPane.addTab("About", tab3);
 
-        // Input panel
+        // Input value panel
         JPanel inputPanel = new JPanel(new MigLayout("fillx", "[grow][pref!][pref!]"));
         Border border = BorderFactory.createTitledBorder("Enter text or choose file");
         inputPanel.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
 
-        JTextField inputField = new JTextField(15);
+        inputField = new JTextField(15);
         buttonFromClipboard = new JButton("From Clipboard");
         buttonFromFile = new JButton("From File");
 
@@ -49,7 +53,7 @@ public class View {
         inputPanel.add(buttonFromClipboard, "height 30:30:30");
         inputPanel.add(buttonFromFile, "wrap, height 30:30:30");
 
-        // Key panel
+        // Enter Key panel
         JPanel keyPanel = new JPanel(new MigLayout("fillx", "[pref!][pref!][pref!][grow]"));
         Border border2 = BorderFactory.createTitledBorder("Enter key");
         keyPanel.setBorder(BorderFactory.createCompoundBorder(border2, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
@@ -69,12 +73,14 @@ public class View {
         Border border3 = BorderFactory.createTitledBorder("Select Algorithm");
         resultPanel.setBorder(BorderFactory.createCompoundBorder(border3, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
         String[] listAlgorithm = new String[] {"Ceasar", "Affine", "Vigenere"};
-        JCheckBox[] checkBoxAlgorithms = new JCheckBox[3];
-        JTextField[] resultFields = new JTextField[3];
+        JCheckBox[] checkBoxAlgorithms = new JCheckBox[listAlgorithm.length];
+        JTextField[] resultFields = new JTextField[listAlgorithm.length];
 
         for (int i = 0; i < listAlgorithm.length; i++) {
             checkBoxAlgorithms[i] = new JCheckBox(listAlgorithm[i]);
             resultFields[i] = new JTextField(90);
+            checkboxToResultFieldMap.put(checkBoxAlgorithms[i],resultFields[i]);
+
         }
 
         for (int i = 0; i < 3; i++) {
@@ -87,9 +93,9 @@ public class View {
 
         // Func panel
         JPanel funcPanel = new JPanel(new MigLayout("alignx right", "[pref!,pref!,pref!]"));
-        JButton buttonGenerateKey = new JButton("Generate Key");
-        JButton buttonCalculate = new JButton("Calculate");
-        JButton buttonClose = new JButton("Close");
+        buttonGenerateKey = new JButton("Generate Key");
+        buttonCalculate = new JButton("Calculate");
+        buttonClose = new JButton("Close");
 
         funcPanel.add(buttonGenerateKey);
         funcPanel.add(buttonCalculate);
@@ -115,28 +121,12 @@ public class View {
         return buttonFromFile;
     }
 
-    public JCheckBox getCheckBoxAlgorithm1() {
-        return checkBoxAlgorithm1;
+    public Map<JCheckBox, JTextField> getCheckboxToResultFieldMap() {
+        return checkboxToResultFieldMap;
     }
 
-    public JCheckBox getCheckBoxAlgorithm2() {
-        return checkBoxAlgorithm2;
-    }
-
-    public JCheckBox getCheckBoxAlgorithm3() {
-        return checkBoxAlgorithm3;
-    }
-
-    public JTextField getResultField1() {
-        return resultField1;
-    }
-
-    public JTextField getResultField2() {
-        return resultField2;
-    }
-
-    public JTextField getResultField3() {
-        return resultField3;
+    public void setCheckboxToResultFieldMap(Map<JCheckBox, JTextField> checkboxToResultFieldMap) {
+        this.checkboxToResultFieldMap = checkboxToResultFieldMap;
     }
 
     public JTextField getKeyField() {
@@ -145,5 +135,25 @@ public class View {
 
     public JComboBox<String> getComboBox() {
         return comboBox;
+    }
+
+    public JTextField getInputField() {
+        return inputField;
+    }
+
+    public void setInputField(JTextField inputField) {
+        this.inputField = inputField;
+    }
+
+    public JButton getButtonClose() {
+        return buttonClose;
+    }
+
+    public JButton getButtonCalculate() {
+        return buttonCalculate;
+    }
+
+    public JButton getButtonGenerateKey() {
+        return buttonGenerateKey;
     }
 }

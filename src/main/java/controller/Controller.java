@@ -1,10 +1,16 @@
 package controller;
 
+import models.CaesarCipher;
 import view.View;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class Controller {
     private View view;
@@ -32,33 +38,6 @@ public class Controller {
             }
         });
 
-//        // Thêm sự kiện cho checkBoxAlgorithm1
-//        view.getCheckBoxAlgorithm1().addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                // Xử lý sự kiện cho checkBoxAlgorithm1 ở đây
-//                System.out.println("getCheckBoxAlgorithm1");
-//            }
-//        });
-//
-//        // Thêm sự kiện cho checkBoxAlgorithm2
-//        view.getCheckBoxAlgorithm2().addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                // Xử lý sự kiện cho checkBoxAlgorithm2 ở đây
-//                System.out.println("getCheckBoxAlgorithm2");
-//            }
-//        });
-//
-//        // Thêm sự kiện cho checkBoxAlgorithm3
-//        view.getCheckBoxAlgorithm3().addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                // Xử lý sự kiện cho checkBoxAlgorithm3 ở đây
-//                System.out.println("getCheckBoxAlgorithm3");
-//            }
-//        });
-
         // Thêm sự kiện cho comboBox
         view.getComboBox().addActionListener(new ActionListener() {
             @Override
@@ -68,6 +47,57 @@ public class Controller {
             }
         });
 
+        view.getButtonCalculate().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Xử lý tính toán và hiển thị kết quả ở đây
+                // Lấy giá trị từ input và key field
+                String inputText = view.getInputField().getText();
+                String key = view.getKeyField().getText();
+                // Lấy checkbox đã chọn
+                List<JCheckBox> listCheckBox = getSelectedCheckboxes();
+                System.out.println(listCheckBox.get(0).getText());
+                // Kiểm tra xem checkbox có được chọn không
+                if (listCheckBox != null) {
+                    // Thực hiện tính toán dựa trên checkbox, input và key
+                    for (JCheckBox jCheckBox:listCheckBox) {
+                        String result = calculateAlgorithm(jCheckBox, inputText, key);
+                        System.out.println(result);
+                        // Hiển thị kết quả lên result field tương ứng
+                        JTextField resultField = view.getCheckboxToResultFieldMap().get(jCheckBox);
+                        if (result != null) {
+                            resultField.setText(result);
+                        }
+                    }
+                }
+            }
+        });
 
+    }
+
+    private String calculateAlgorithm(JCheckBox checkbox, String inputText, String key) {
+        // Determine which algorithm to use based on the checkbox
+        String algorithmResult = "";
+
+        if (checkbox.getText().equals("Ceasar")) {
+            // Use the first algorithm (replace with your specific implementation)
+            algorithmResult = new CaesarCipher(Integer.valueOf(key)).calculate(inputText);
+        }
+
+        return algorithmResult;
+    }
+
+
+    public List<JCheckBox> getSelectedCheckboxes() {
+        List<JCheckBox> selectedCheckboxes = new ArrayList<>();
+
+        for (Map.Entry<JCheckBox, JTextField> entry : view.getCheckboxToResultFieldMap().entrySet()) {
+            JCheckBox checkbox = entry.getKey();
+            if (checkbox.isSelected()) {
+                selectedCheckboxes.add(checkbox);
+            }
+        }
+
+        return selectedCheckboxes;
     }
 }
