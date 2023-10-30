@@ -70,23 +70,22 @@ public class View {
 
         // Result panel
         JPanel resultPanel = new JPanel(new MigLayout("fillx", "[pref!][grow]"));
-        Border border3 = BorderFactory.createTitledBorder("Select Algorithm");
+        Border border3 = BorderFactory.createTitledBorder("Mã hóa đối xứng");
         resultPanel.setBorder(BorderFactory.createCompoundBorder(border3, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
-        String[] listAlgorithm = new String[] {"Ceasar", "Affine", "Vigenere"};
-        JCheckBox[] checkBoxAlgorithms = new JCheckBox[listAlgorithm.length];
-        JTextField[] resultFields = new JTextField[listAlgorithm.length];
+        String[] SymmetricEncryption = new String[] {"Ceasar", "Affine", "Vigenere", "DES"};
+        JCheckBox[] checkBoxAlgorithms = new JCheckBox[SymmetricEncryption.length];
+        JTextField[] resultFields = new JTextField[SymmetricEncryption.length];
 
-        for (int i = 0; i < listAlgorithm.length; i++) {
-            checkBoxAlgorithms[i] = new JCheckBox(listAlgorithm[i]);
+        for (int i = 0; i < SymmetricEncryption.length; i++) {
+            checkBoxAlgorithms[i] = new JCheckBox(SymmetricEncryption[i]);
             resultFields[i] = new JTextField(90);
             checkboxToResultFieldMap.put(checkBoxAlgorithms[i],resultFields[i]);
-
         }
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < SymmetricEncryption.length; i++) {
             resultPanel.add(checkBoxAlgorithms[i], "gapright 10");
             resultPanel.add(resultFields[i], "grow");
-            if (i < 2) {
+            if (i < SymmetricEncryption.length -1 ) {
                 resultPanel.add(resultFields[i], "grow, wrap");
             }
         }
@@ -97,8 +96,8 @@ public class View {
         buttonCalculate = new JButton("Calculate");
         buttonClose = new JButton("Close");
 
-        funcPanel.add(buttonGenerateKey);
         funcPanel.add(buttonCalculate);
+        funcPanel.add(buttonGenerateKey);
         funcPanel.add(buttonClose);
 
         tab1.add(inputPanel, "width max(1200), wrap");

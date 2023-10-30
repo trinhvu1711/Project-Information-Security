@@ -1,6 +1,7 @@
 package controller;
 
 import models.CaesarCipher;
+import models.DESEncryption;
 import view.View;
 
 import javax.swing.*;
@@ -8,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +49,7 @@ public class Controller {
             }
         });
 
+//        add event listener for calculate button
         view.getButtonCalculate().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -73,6 +76,26 @@ public class Controller {
             }
         });
 
+//        add even listener for generate key
+        view.getButtonGenerateKey().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                List<JCheckBox> listCheckBox = getSelectedCheckboxes();
+                System.out.println(listCheckBox.get(0).getText());
+                String key = null;
+                if (listCheckBox != null){
+                    try {
+                        key = generateKey(listCheckBox.get(0));
+                    } catch (NoSuchAlgorithmException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                    JTextField resultField = view.getKeyField();
+                    if (key != null) {
+                        resultField.setText(key);
+                    }
+                }
+            }
+        });
     }
 
     private String calculateAlgorithm(JCheckBox checkbox, String inputText, String key) {
@@ -83,8 +106,24 @@ public class Controller {
             // Use the first algorithm (replace with your specific implementation)
             algorithmResult = new CaesarCipher(Integer.valueOf(key)).calculate(inputText);
         }
-
+        if (checkbox.getText().equals("DES")) {
+            // Use the first algorithm (replace with your specific implementation)
+            algorithmResult = new DESEncryption().calculate(inputText);
+        }
         return algorithmResult;
+    }
+
+    private String generateKey(JCheckBox checkbox) throws NoSuchAlgorithmException {
+        // Determine which algorithm to use based on the checkbox
+        String key = "";
+
+        if (checkbox.getText().equals("DES")) {
+            // Use the first algorithm (replace with your specific implementation)
+            DESEncryption desEncryption =  new DESEncryption();
+            desEncryption.generateKey();
+            key = desEncryption.getKey().toString();
+        }
+        return key;
     }
 
 
