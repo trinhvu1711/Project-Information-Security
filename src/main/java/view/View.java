@@ -70,9 +70,9 @@ public class View {
 
         // Result panel 1
         JPanel resultPanel1 = new JPanel(new MigLayout("fillx", "[pref!][grow]"));
-        Border border3 = BorderFactory.createTitledBorder("Mã hóa đối xứng");
+        Border border3 = BorderFactory.createTitledBorder("Symmetric Encryption");
         resultPanel1.setBorder(BorderFactory.createCompoundBorder(border3, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
-        String[] SymmetricEncryption = new String[] {"Ceasar", "Affine", "Vigenere", "DES"};
+        String[] SymmetricEncryption = new String[] {"Ceasar", "Affine", "Vigenere","Blowfish", "Twofish", "DES", "AES"};
         JCheckBox[] checkBoxAlgorithms1 = new JCheckBox[SymmetricEncryption.length];
         JTextField[] resultFields1 = new JTextField[SymmetricEncryption.length];
 
@@ -92,9 +92,9 @@ public class View {
 
 //      Result panel 2
         JPanel resultPanel2 = new JPanel(new MigLayout("fillx", "[pref!][grow]"));
-        Border border4 = BorderFactory.createTitledBorder("Mã hóa bất đối xứng");
+        Border border4 = BorderFactory.createTitledBorder("Asymmetric Encryption");
         resultPanel2.setBorder(BorderFactory.createCompoundBorder(border4, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
-        String[] AsymmetricEncryption = new String[] {"RSA"};
+        String[] AsymmetricEncryption = new String[] {"RSA", "DSA"};
         JCheckBox[] checkBoxAlgorithms2 = new JCheckBox[AsymmetricEncryption.length];
         JTextField[] resultFields2 = new JTextField[AsymmetricEncryption.length];
 
@@ -108,15 +108,15 @@ public class View {
             resultPanel2.add(checkBoxAlgorithms2[i], "gapright 10");
             resultPanel2.add(resultFields2[i], "grow");
             if (i < AsymmetricEncryption.length -1 ) {
-                resultPanel1.add(resultFields2[i], "grow, wrap");
+                resultPanel2.add(resultFields2[i], "grow, wrap");
             }
         }
 
 //           Result panel 3
         JPanel resultPanel3 = new JPanel(new MigLayout("fillx", "[pref!][grow]"));
-        Border border5 = BorderFactory.createTitledBorder("Hàm băm");
+        Border border5 = BorderFactory.createTitledBorder("Hash Function");
         resultPanel3.setBorder(BorderFactory.createCompoundBorder(border5, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
-        String[] HashFunction = new String[] {"MD5", "SHA"};
+        String[] HashFunction = new String[] {"MD5", "SHA256"};
         JCheckBox[] checkBoxAlgorithms3 = new JCheckBox[HashFunction.length];
         JTextField[] resultFields3 = new JTextField[HashFunction.length];
 
@@ -132,6 +132,13 @@ public class View {
             if (i < HashFunction.length -1 ) {
                 resultPanel3.add(resultFields3[i], "grow, wrap");
             }
+        }
+
+        int maxWidth = 70;
+
+        for (Map.Entry<JCheckBox, JTextField> entry : checkboxToResultFieldMap.entrySet()) {
+            JCheckBox checkBox = entry.getKey();
+            checkBox.setMinimumSize(new Dimension(maxWidth, checkBox.getPreferredSize().height));
         }
 
         // Func panel

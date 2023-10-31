@@ -3,6 +3,7 @@ package controller;
 import models.CaesarCipher;
 import models.DESEncryption;
 import models.MD5;
+import models.SHA256;
 import view.View;
 
 import javax.swing.*;
@@ -115,6 +116,10 @@ public class Controller {
         if (checkbox.getText().equals("MD5")) {
             // Use the first algorithm (replace with your specific implementation)
             algorithmResult = new MD5().calculate(inputText);
+        }
+        if (checkbox.getText().equals("SHA256")) {
+            // Use the first algorithm (replace with your specific implementation)
+            algorithmResult = new SHA256().calculate(inputText);
         }
         return algorithmResult;
     }
