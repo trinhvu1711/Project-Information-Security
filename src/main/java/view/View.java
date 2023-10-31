@@ -68,25 +68,69 @@ public class View {
         keyPanel.add(label2);
         keyPanel.add(keyField, "grow, height 30:30:30");
 
-        // Result panel
-        JPanel resultPanel = new JPanel(new MigLayout("fillx", "[pref!][grow]"));
+        // Result panel 1
+        JPanel resultPanel1 = new JPanel(new MigLayout("fillx", "[pref!][grow]"));
         Border border3 = BorderFactory.createTitledBorder("Mã hóa đối xứng");
-        resultPanel.setBorder(BorderFactory.createCompoundBorder(border3, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+        resultPanel1.setBorder(BorderFactory.createCompoundBorder(border3, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
         String[] SymmetricEncryption = new String[] {"Ceasar", "Affine", "Vigenere", "DES"};
-        JCheckBox[] checkBoxAlgorithms = new JCheckBox[SymmetricEncryption.length];
-        JTextField[] resultFields = new JTextField[SymmetricEncryption.length];
+        JCheckBox[] checkBoxAlgorithms1 = new JCheckBox[SymmetricEncryption.length];
+        JTextField[] resultFields1 = new JTextField[SymmetricEncryption.length];
 
         for (int i = 0; i < SymmetricEncryption.length; i++) {
-            checkBoxAlgorithms[i] = new JCheckBox(SymmetricEncryption[i]);
-            resultFields[i] = new JTextField(90);
-            checkboxToResultFieldMap.put(checkBoxAlgorithms[i],resultFields[i]);
+            checkBoxAlgorithms1[i] = new JCheckBox(SymmetricEncryption[i]);
+            resultFields1[i] = new JTextField(90);
+            checkboxToResultFieldMap.put(checkBoxAlgorithms1[i],resultFields1[i]);
         }
 
         for (int i = 0; i < SymmetricEncryption.length; i++) {
-            resultPanel.add(checkBoxAlgorithms[i], "gapright 10");
-            resultPanel.add(resultFields[i], "grow");
+            resultPanel1.add(checkBoxAlgorithms1[i], "gapright 10");
+            resultPanel1.add(resultFields1[i], "grow");
             if (i < SymmetricEncryption.length -1 ) {
-                resultPanel.add(resultFields[i], "grow, wrap");
+                resultPanel1.add(resultFields1[i], "grow, wrap");
+            }
+        }
+
+//      Result panel 2
+        JPanel resultPanel2 = new JPanel(new MigLayout("fillx", "[pref!][grow]"));
+        Border border4 = BorderFactory.createTitledBorder("Mã hóa bất đối xứng");
+        resultPanel2.setBorder(BorderFactory.createCompoundBorder(border4, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+        String[] AsymmetricEncryption = new String[] {"RSA"};
+        JCheckBox[] checkBoxAlgorithms2 = new JCheckBox[AsymmetricEncryption.length];
+        JTextField[] resultFields2 = new JTextField[AsymmetricEncryption.length];
+
+        for (int i = 0; i < AsymmetricEncryption.length; i++) {
+            checkBoxAlgorithms2[i] = new JCheckBox(AsymmetricEncryption[i]);
+            resultFields2[i] = new JTextField(90);
+            checkboxToResultFieldMap.put(checkBoxAlgorithms2[i],resultFields2[i]);
+        }
+
+        for (int i = 0; i < AsymmetricEncryption.length; i++) {
+            resultPanel2.add(checkBoxAlgorithms2[i], "gapright 10");
+            resultPanel2.add(resultFields2[i], "grow");
+            if (i < AsymmetricEncryption.length -1 ) {
+                resultPanel1.add(resultFields2[i], "grow, wrap");
+            }
+        }
+
+//           Result panel 3
+        JPanel resultPanel3 = new JPanel(new MigLayout("fillx", "[pref!][grow]"));
+        Border border5 = BorderFactory.createTitledBorder("Hàm băm");
+        resultPanel3.setBorder(BorderFactory.createCompoundBorder(border5, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+        String[] HashFunction = new String[] {"MD5", "SHA"};
+        JCheckBox[] checkBoxAlgorithms3 = new JCheckBox[HashFunction.length];
+        JTextField[] resultFields3 = new JTextField[HashFunction.length];
+
+        for (int i = 0; i < HashFunction.length; i++) {
+            checkBoxAlgorithms3[i] = new JCheckBox(HashFunction[i]);
+            resultFields3[i] = new JTextField(90);
+            checkboxToResultFieldMap.put(checkBoxAlgorithms3[i],resultFields3[i]);
+        }
+
+        for (int i = 0; i < HashFunction.length; i++) {
+            resultPanel3.add(checkBoxAlgorithms3[i], "gapright 10");
+            resultPanel3.add(resultFields3[i], "grow");
+            if (i < HashFunction.length -1 ) {
+                resultPanel3.add(resultFields3[i], "grow, wrap");
             }
         }
 
@@ -102,7 +146,9 @@ public class View {
 
         tab1.add(inputPanel, "width max(1200), wrap");
         tab1.add(keyPanel, "width max(1200), wrap");
-        tab1.add(resultPanel, "width max(1200), wrap");
+        tab1.add(resultPanel1, "width max(1200), wrap");
+        tab1.add(resultPanel2, "width max(1200), wrap");
+        tab1.add(resultPanel3, "width max(1200), wrap");
 
         mainPanel.add(tabbedPane, BorderLayout.CENTER);
         mainPanel.add(funcPanel, BorderLayout.SOUTH);

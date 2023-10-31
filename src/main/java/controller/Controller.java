@@ -2,6 +2,7 @@ package controller;
 
 import models.CaesarCipher;
 import models.DESEncryption;
+import models.MD5;
 import view.View;
 
 import javax.swing.*;
@@ -59,7 +60,7 @@ public class Controller {
                 String key = view.getKeyField().getText();
                 // Lấy checkbox đã chọn
                 List<JCheckBox> listCheckBox = getSelectedCheckboxes();
-                System.out.println(listCheckBox.get(0).getText());
+//                System.out.println(listCheckBox.get(0).getText());
                 // Kiểm tra xem checkbox có được chọn không
                 if (listCheckBox != null) {
                     // Thực hiện tính toán dựa trên checkbox, input và key
@@ -98,6 +99,7 @@ public class Controller {
         });
     }
 
+//    add Algorithm
     private String calculateAlgorithm(JCheckBox checkbox, String inputText, String key) {
         // Determine which algorithm to use based on the checkbox
         String algorithmResult = "";
@@ -109,6 +111,10 @@ public class Controller {
         if (checkbox.getText().equals("DES")) {
             // Use the first algorithm (replace with your specific implementation)
             algorithmResult = new DESEncryption().calculate(inputText);
+        }
+        if (checkbox.getText().equals("MD5")) {
+            // Use the first algorithm (replace with your specific implementation)
+            algorithmResult = new MD5().calculate(inputText);
         }
         return algorithmResult;
     }
