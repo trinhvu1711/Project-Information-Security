@@ -72,7 +72,7 @@ public class View {
         JPanel resultPanel1 = new JPanel(new MigLayout("fillx", "[pref!][grow]"));
         Border border3 = BorderFactory.createTitledBorder("Symmetric Encryption");
         resultPanel1.setBorder(BorderFactory.createCompoundBorder(border3, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
-        String[] SymmetricEncryption = new String[] {"Ceasar", "Affine", "Vigenere","Blowfish", "Twofish", "DES", "AES"};
+        String[] SymmetricEncryption = new String[] {"Ceasar", "Vigenere", "Twofish", "Serpent", "DES", "AES"};
         JCheckBox[] checkBoxAlgorithms1 = new JCheckBox[SymmetricEncryption.length];
         JTextField[] resultFields1 = new JTextField[SymmetricEncryption.length];
 

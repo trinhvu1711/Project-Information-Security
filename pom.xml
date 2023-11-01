@@ -38,6 +38,13 @@
             <artifactId>flatlaf-fonts-roboto</artifactId>
             <version>2.137</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk18on -->
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk18on</artifactId>
+            <version>1.76</version>
+        </dependency>
+
 
     </dependencies>
 </project>
