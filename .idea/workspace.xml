@@ -5,11 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9c5e09be-f359-4870-b622-a58a8bf4542a" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/models/AESEncryption.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/models/Twofish.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/view/View.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/View.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/models/Twofish.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/Twofish.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -78,7 +75,8 @@
       <workItem from="1698655470351" duration="4582000" />
       <workItem from="1698720597475" duration="2411000" />
       <workItem from="1698755738541" duration="2343000" />
-      <workItem from="1698845129835" duration="2370000" />
+      <workItem from="1698845129835" duration="2422000" />
+      <workItem from="1698933856232" duration="2265000" />
     </task>
     <servers />
   </component>
