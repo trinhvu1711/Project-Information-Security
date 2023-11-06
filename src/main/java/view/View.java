@@ -12,8 +12,8 @@ import java.util.Map;
 
 public class View {
     private JFrame frame;
-    private JButton buttonFromClipboard;
-    private JButton buttonFromFile, buttonClose, buttonCalculate,buttonGenerateKey;
+    private JButton buttonFromClipboard, buttonFromClipboardDecrypt;
+    private JButton buttonFromFile, buttonFromFileDecrypt, buttonClose, buttonCalculate,buttonGenerateKey;
     private Map<JCheckBox, JTextField> checkboxToResultFieldMap = new HashMap<>();
 //    private JCheckBox checkBoxAlgorithm1;
 //    private JCheckBox checkBoxAlgorithm2;
@@ -21,9 +21,9 @@ public class View {
 //    private JTextField resultField1;
 //    private JTextField resultField2;
 //    private JTextField resultField3;
-    private JTextField inputField;
-    private JTextField keyField;
-    private JComboBox<String> comboBox;
+    private JTextField inputField, decrypInputField;
+    private JTextField keyField, decryptKeyField;
+    private JComboBox<String> comboBox, comboBoxDecrypt;
     public View(){
         FlatLightLaf.setup();
         frame = new JFrame("Encrypt App");
@@ -36,10 +36,11 @@ public class View {
         JPanel tab1 = new JPanel(new MigLayout());
         JPanel tab2 = new JPanel(new MigLayout());
         JPanel tab3 = new JPanel(new MigLayout());
+        JPanel tab4 = new JPanel(new MigLayout());
         tabbedPane.addTab("Encrypt", tab1);
         tabbedPane.addTab("Decrypt", tab2);
-        tabbedPane.addTab("About", tab3);
-
+        tabbedPane.addTab("Digital Signature", tab3);
+        tabbedPane.addTab("About", tab4);
         // Input value panel
         JPanel inputPanel = new JPanel(new MigLayout("fillx", "[grow][pref!][pref!]"));
         Border border = BorderFactory.createTitledBorder("Enter text or choose file");
@@ -68,6 +69,7 @@ public class View {
         keyPanel.add(label2);
         keyPanel.add(keyField, "grow, height 30:30:30");
 
+//        start tab 1
         // Result panel 1
         JPanel resultPanel1 = new JPanel(new MigLayout("fillx", "[pref!][grow]"));
         Border border3 = BorderFactory.createTitledBorder("Symmetric Encryption");
@@ -94,7 +96,7 @@ public class View {
         JPanel resultPanel2 = new JPanel(new MigLayout("fillx", "[pref!][grow]"));
         Border border4 = BorderFactory.createTitledBorder("Asymmetric Encryption");
         resultPanel2.setBorder(BorderFactory.createCompoundBorder(border4, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
-        String[] AsymmetricEncryption = new String[] {"RSA", "DSA"};
+        String[] AsymmetricEncryption = new String[] {"RSA"};
         JCheckBox[] checkBoxAlgorithms2 = new JCheckBox[AsymmetricEncryption.length];
         JTextField[] resultFields2 = new JTextField[AsymmetricEncryption.length];
 
@@ -140,6 +142,63 @@ public class View {
             JCheckBox checkBox = entry.getKey();
             checkBox.setMinimumSize(new Dimension(maxWidth, checkBox.getPreferredSize().height));
         }
+//        done tab 1
+
+
+        // Input value panel
+        JPanel inputDecryptPanel = new JPanel(new MigLayout("fillx", "[grow][pref!][pref!]"));
+        Border decryptBorder = BorderFactory.createTitledBorder("Enter text or choose file");
+        inputDecryptPanel.setBorder(BorderFactory.createCompoundBorder(decryptBorder, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+
+        decrypInputField = new JTextField(15);
+        buttonFromClipboardDecrypt = new JButton("From Clipboard");
+        buttonFromFileDecrypt = new JButton("From File");
+
+        inputDecryptPanel.add(decrypInputField, "grow, height 30:30:30");
+        inputDecryptPanel.add(buttonFromClipboardDecrypt, "height 30:30:30");
+        inputDecryptPanel.add(buttonFromFileDecrypt, "wrap, height 30:30:30");
+
+        // Enter Key panel
+        JPanel keyPanelDecrypt = new JPanel(new MigLayout("fillx", "[pref!][pref!][pref!][grow]"));
+        Border keyDecryptBorder = BorderFactory.createTitledBorder("Enter key");
+        keyPanelDecrypt.setBorder(BorderFactory.createCompoundBorder(keyDecryptBorder, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+
+        comboBoxDecrypt = new JComboBox<>(new String[]{"Option 1", "Option 2", "Option 3"});
+        decryptKeyField = new JTextField(15);
+
+        keyPanelDecrypt.add( new JLabel("Key Format"));
+        keyPanelDecrypt.add(comboBoxDecrypt, "grow, gapright 10");
+        keyPanelDecrypt.add(new JLabel("Key"));
+        keyPanelDecrypt.add(decryptKeyField, "grow, height 30:30:30");
+
+//        start tab 2
+        JPanel resultPanel4 = new JPanel(new MigLayout("fillx", "[pref!][grow]"));
+        Border border6 = BorderFactory.createTitledBorder("Symmetric Encryption");
+        resultPanel4.setBorder(BorderFactory.createCompoundBorder(border6, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+        String[] SymmetricDecryption = new String[] {"Ceasar", "Vigenere", "Twofish", "Serpent", "DES", "AES"};
+        JCheckBox[] checkBoxAlgorithms4 = new JCheckBox[SymmetricDecryption.length];
+        JTextField[] resultFields4 = new JTextField[SymmetricDecryption.length];
+
+        for (int i = 0; i < SymmetricDecryption.length; i++) {
+            checkBoxAlgorithms4[i] = new JCheckBox(SymmetricDecryption[i]);
+            resultFields4[i] = new JTextField(90);
+            checkboxToResultFieldMap.put(checkBoxAlgorithms4[i],resultFields4[i]);
+        }
+
+        for (int i = 0; i < SymmetricDecryption.length; i++) {
+            resultPanel4.add(checkBoxAlgorithms4[i], "gapright 10");
+            resultPanel4.add(resultFields4[i], "grow");
+            if (i < SymmetricDecryption.length -1 ) {
+                resultPanel4.add(resultFields4[i], "grow, wrap");
+            }
+        }
+
+//        done tab 2
+
+//        start tab 3
+
+//        done tab 3
+
 
         // Func panel
         JPanel funcPanel = new JPanel(new MigLayout("alignx right", "[pref!,pref!,pref!]"));
@@ -156,6 +215,10 @@ public class View {
         tab1.add(resultPanel1, "width max(1200), wrap");
         tab1.add(resultPanel2, "width max(1200), wrap");
         tab1.add(resultPanel3, "width max(1200), wrap");
+
+        tab2.add(inputDecryptPanel, "width max(1200), wrap");
+        tab2.add(keyPanelDecrypt, "width max(1200), wrap");
+        tab2.add(resultPanel4, "width max(1200), wrap");
 
         mainPanel.add(tabbedPane, BorderLayout.CENTER);
         mainPanel.add(funcPanel, BorderLayout.SOUTH);
