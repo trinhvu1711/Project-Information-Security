@@ -23,30 +23,6 @@ public class DESEncryption implements EncryptionAlgorithm{
         result = encrypt.doFinal(plainText.getBytes());
         return result;
     }
-    public byte[] decrypt(byte[] plainText) throws Exception {
-        byte[] result;
-        Cipher encrypt = Cipher.getInstance("DES");
-        encrypt.init(Cipher.DECRYPT_MODE, key);
-        result = encrypt.doFinal(plainText);
-        return result;
-    }
-
-    public String encryptBase64(String plainText) throws Exception {
-        byte[] result;
-        Cipher encrypt = Cipher.getInstance("DES");
-        encrypt.init(Cipher.ENCRYPT_MODE, key);
-        result = encrypt.doFinal(plainText.getBytes());
-        return Base64.getEncoder().encodeToString(result);
-    }
-
-    public String decryptBase64(String plainText) throws Exception {
-        byte[] result;
-        byte[] text = Base64.getDecoder().decode(plainText);
-        Cipher encrypt = Cipher.getInstance("DES");
-        encrypt.init(Cipher.DECRYPT_MODE, key);
-        result = encrypt.doFinal(text);
-        return new String(result);
-    }
 
     public void encryptFile(String sourceFile, String destFile) throws Exception {
         File file = new File(sourceFile);
@@ -118,8 +94,8 @@ public class DESEncryption implements EncryptionAlgorithm{
     @Override
     public String decrypt(String plainText) {
         byte[] result;
-        try {
         byte[] text = Base64.getDecoder().decode(plainText);
+        try {
         Cipher encrypt = Cipher.getInstance("DES");
         encrypt.init(Cipher.DECRYPT_MODE, key);
         result = encrypt.doFinal(text);
@@ -138,12 +114,10 @@ public class DESEncryption implements EncryptionAlgorithm{
         DESEncryption desEncryption = new DESEncryption();
         desEncryption.generateKey();
         System.out.println(desEncryption.key);
-        byte[] encrypt = desEncryption.encrypt(msg);
-        byte[] decrypt = desEncryption.decrypt(encrypt);
+        String encrypt = desEncryption.calculate(msg);
+        String decrypt = desEncryption.decrypt(encrypt);
         System.out.println(encrypt);
-        System.out.println(new String(decrypt, StandardCharsets.UTF_8));
-        System.out.println("base64");
-        System.out.println(desEncryption.encryptBase64(msg));
-        System.out.println(desEncryption.decryptBase64(desEncryption.encryptBase64(msg)));
+        System.out.println(decrypt);
+
     }
 }

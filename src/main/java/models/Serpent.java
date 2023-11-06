@@ -5,6 +5,7 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
 import java.util.Base64;
@@ -49,19 +50,19 @@ public class Serpent implements EncryptionAlgorithm {
         }
         return new String(result);
     }
-    public static String bytesToHex(byte[] bytes) {
-        StringBuilder sb = new StringBuilder();
-        for (byte b : bytes) {
-            sb.append(String.format("%02X", b));
-        }
-        return sb.toString();
+    public SecretKey getKey() {
+        return key;
     }
+    public void setKey(SecretKey key) {
+        this.key = key;
+    }
+
     public static void main(String[] args) throws NoSuchAlgorithmException {
         Serpent serpent = new Serpent();
         serpent.generateKey();
         System.out.println(serpent.key);
         byte[] keyBytes = serpent.key.getEncoded();
-        System.out.println("Key: " + bytesToHex(keyBytes));
+        System.out.println("Key: " + VietnameseTextHelper.bytesToHex(keyBytes));
         String text = "Hello, Bouncy Castle!";
         String encrypt = serpent.calculate(text);
         String decrypt = serpent.decrypt(encrypt);

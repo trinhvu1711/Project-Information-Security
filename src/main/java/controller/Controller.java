@@ -15,6 +15,12 @@ import java.util.Map;
 
 public class Controller {
     private View view;
+    Serpent serpent = new Serpent();
+    RSA rsa = new RSA();
+    DESEncryption des = new DESEncryption();
+    AESEncryption aes = new AESEncryption();
+    Twofish twofish = new Twofish();
+
     public Controller(View view) {
         this.view = view;
         attachEventListeners();
@@ -106,13 +112,26 @@ public class Controller {
             // Use the first algorithm (replace with your specific implementation)
             algorithmResult = new CaesarCipher(Integer.valueOf(key)).calculate(inputText);
         }
-        if (checkbox.getText().equals("DES")) {
+        if (checkbox.getText().equals("Vigenere")) {
             // Use the first algorithm (replace with your specific implementation)
-            algorithmResult = new DESEncryption().calculate(inputText);
+            algorithmResult = new VigenereCipher(key).calculate(inputText);
+        }
+        if (checkbox.getText().equals("Twofish")) {
+            // Use the first algorithm (replace with your specific implementation)
+            algorithmResult = twofish.calculate(inputText);
+        }
+        if (checkbox.getText().equals("Serpent")) {
+            // Use the first algorithm (replace with your specific implementation)
+
+            algorithmResult =serpent.calculate(inputText);
         }
         if (checkbox.getText().equals("DES")) {
             // Use the first algorithm (replace with your specific implementation)
-            algorithmResult = new AESEncryption().calculate(inputText);
+            algorithmResult = des.calculate(inputText);
+        }
+        if (checkbox.getText().equals("AES")) {
+            // Use the first algorithm (replace with your specific implementation)
+            algorithmResult = aes.calculate(inputText);
         }
         if (checkbox.getText().equals("MD5")) {
             // Use the first algorithm (replace with your specific implementation)
@@ -128,12 +147,30 @@ public class Controller {
     private String generateKey(JCheckBox checkbox) throws NoSuchAlgorithmException {
         // Determine which algorithm to use based on the checkbox
         String key = "";
-
+        if (checkbox.getText().equals("AES")) {
+            // Use the first algorithm (replace with your specific implementation)
+            aes = new AESEncryption();
+            aes.generateKey();
+            key = VietnameseTextHelper.bytesToHex(aes.getKey().getEncoded());
+        }
         if (checkbox.getText().equals("DES")) {
             // Use the first algorithm (replace with your specific implementation)
-            DESEncryption desEncryption =  new DESEncryption();
-            desEncryption.generateKey();
-            key = desEncryption.getKey().toString();
+            des = new DESEncryption();
+            des.generateKey();
+            key = VietnameseTextHelper.bytesToHex(des.getKey().getEncoded());
+        }
+        if (checkbox.getText().equals("Twofish")) {
+            // Use the first algorithm (replace with your specific implementation)
+            twofish = new Twofish();
+            twofish.generateKey();
+            key = VietnameseTextHelper.bytesToHex(twofish.getKey().getEncoded());
+        }
+
+        if (checkbox.getText().equals("Serpent")) {
+            // Use the first algorithm (replace with your specific implementation)
+            serpent= new Serpent();
+            serpent.generateKey();
+            key = VietnameseTextHelper.bytesToHex(serpent.getKey().getEncoded());
         }
         return key;
     }

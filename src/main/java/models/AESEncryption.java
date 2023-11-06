@@ -44,7 +44,9 @@ public class AESEncryption implements EncryptionAlgorithm{
         }
         return new String(result);
     }
-
+    public SecretKey getKey() {
+        return key;
+    }
     public static void main(String[] args) throws Exception {
         String msg = "vudeptrai";
         AESEncryption aesEncryption = new AESEncryption();

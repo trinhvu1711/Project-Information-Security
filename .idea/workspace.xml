@@ -5,10 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9c5e09be-f359-4870-b622-a58a8bf4542a" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/models/Serpent.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/controller/Controller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controller/Controller.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/models/AESEncryption.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/AESEncryption.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/models/DESEncryption.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/DESEncryption.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/models/Serpent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/Serpent.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/models/Twofish.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/Twofish.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/models/VietnameseTextHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/VietnameseTextHelper.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -63,7 +66,20 @@
       <recent name="" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.Serpent">
+  <component name="RunManager" selected="Application.Main">
+    <configuration name="DESEncryption" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="models.DESEncryption" />
+      <module name="Project-Information-Security" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="models.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Main" />
       <module name="Project-Information-Security" />
@@ -97,11 +113,26 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="VigenereCipher" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="models.VigenereCipher" />
+      <module name="Project-Information-Security" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="models.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.Main" />
+        <item itemvalue="Application.DESEncryption" />
+        <item itemvalue="Application.VigenereCipher" />
         <item itemvalue="Application.Serpent" />
         <item itemvalue="Application.Twofish" />
-        <item itemvalue="Application.Main" />
       </list>
     </recent_temporary>
   </component>
@@ -124,12 +155,23 @@
       <workItem from="1698933856232" duration="2496000" />
       <workItem from="1699196827579" duration="1921000" />
       <workItem from="1699257307851" duration="4898000" />
-      <workItem from="1699282260085" duration="4196000" />
+      <workItem from="1699282260085" duration="7898000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

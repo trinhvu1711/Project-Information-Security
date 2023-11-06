@@ -24,6 +24,14 @@ public class VietnameseTextHelper {
         return "";
     }
 
+    public static String bytesToHex(byte[] bytes) {
+        StringBuilder sb = new StringBuilder();
+        for (byte b : bytes) {
+            sb.append(String.format("%02X", b));
+        }
+        return sb.toString();
+    }
+
     public static String getCharacterAtIndexAndLowerCase(int index) {
         if (index >= 0 && index < ALPHABET_SIZE) {
             char character = ALPHABET_VIETNAMESE.charAt(index);

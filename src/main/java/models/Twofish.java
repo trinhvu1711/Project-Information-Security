@@ -4,6 +4,7 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
 import java.util.Base64;
@@ -48,12 +49,12 @@ public class Twofish implements EncryptionAlgorithm  {
         return new String(result);
     }
 
-    public static String bytesToHex(byte[] bytes) {
-        StringBuilder sb = new StringBuilder();
-        for (byte b : bytes) {
-            sb.append(String.format("%02X", b));
-        }
-        return sb.toString();
+    public SecretKey getKey() {
+        return key;
+    }
+
+    public void setKey(SecretKey key) {
+        this.key = key;
     }
 
     public static void main(String[] args) throws NoSuchAlgorithmException {
@@ -61,7 +62,7 @@ public class Twofish implements EncryptionAlgorithm  {
         twofish.generateKey();
         System.out.println(twofish.key);
         byte[] keyBytes = twofish.key.getEncoded();
-        System.out.println("Key: " + bytesToHex(keyBytes));
+        System.out.println("Key: " + VietnameseTextHelper.bytesToHex(keyBytes));
         String text = "Hello, Bouncy Castle!";
         String encrypt = twofish.calculate(text);
         String decrypt = twofish.decrypt(encrypt);
