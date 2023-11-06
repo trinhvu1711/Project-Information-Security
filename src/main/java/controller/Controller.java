@@ -1,9 +1,6 @@
 package controller;
 
-import models.CaesarCipher;
-import models.DESEncryption;
-import models.MD5;
-import models.SHA256;
+import models.*;
 import view.View;
 
 import javax.swing.*;
@@ -112,6 +109,10 @@ public class Controller {
         if (checkbox.getText().equals("DES")) {
             // Use the first algorithm (replace with your specific implementation)
             algorithmResult = new DESEncryption().calculate(inputText);
+        }
+        if (checkbox.getText().equals("DES")) {
+            // Use the first algorithm (replace with your specific implementation)
+            algorithmResult = new AESEncryption().calculate(inputText);
         }
         if (checkbox.getText().equals("MD5")) {
             // Use the first algorithm (replace with your specific implementation)

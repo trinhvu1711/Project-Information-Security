@@ -1,4 +1,5 @@
 package models;
+
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import javax.crypto.Cipher;
@@ -8,17 +9,13 @@ import java.security.NoSuchAlgorithmException;
 import java.security.Security;
 import java.util.Base64;
 
-public class Twofish implements EncryptionAlgorithm  {
+public class Serpent implements EncryptionAlgorithm {
     private SecretKey key;
 
-    public Twofish() {
+    public Serpent() {
         Security.addProvider(new BouncyCastleProvider());
     }
 
-    public void generateKey() throws NoSuchAlgorithmException {
-        KeyGenerator keygen = KeyGenerator.getInstance("Twofish");
-        key = keygen.generateKey();
-    }
     @Override
     public String calculate(String plainText) {
         byte[] result;
@@ -33,6 +30,11 @@ public class Twofish implements EncryptionAlgorithm  {
 
         return Base64.getEncoder().encodeToString(result);
     }
+    public void generateKey() throws NoSuchAlgorithmException {
+        KeyGenerator keygen = KeyGenerator.getInstance("Serpent");
+        key = keygen.generateKey();
+    }
+
 
     @Override
     public String decrypt(String plainText) {
@@ -47,7 +49,6 @@ public class Twofish implements EncryptionAlgorithm  {
         }
         return new String(result);
     }
-
     public static String bytesToHex(byte[] bytes) {
         StringBuilder sb = new StringBuilder();
         for (byte b : bytes) {
@@ -55,17 +56,17 @@ public class Twofish implements EncryptionAlgorithm  {
         }
         return sb.toString();
     }
-
     public static void main(String[] args) throws NoSuchAlgorithmException {
-        Twofish twofish = new Twofish();
-        twofish.generateKey();
-        System.out.println(twofish.key);
-        byte[] keyBytes = twofish.key.getEncoded();
+        Serpent serpent = new Serpent();
+        serpent.generateKey();
+        System.out.println(serpent.key);
+        byte[] keyBytes = serpent.key.getEncoded();
         System.out.println("Key: " + bytesToHex(keyBytes));
         String text = "Hello, Bouncy Castle!";
-        String encrypt = twofish.calculate(text);
-        String decrypt = twofish.decrypt(encrypt);
+        String encrypt = serpent.calculate(text);
+        String decrypt = serpent.decrypt(encrypt);
         System.out.println(encrypt);
         System.out.println(decrypt);
     }
+
 }
