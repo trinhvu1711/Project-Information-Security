@@ -7,6 +7,8 @@
     <list default="true" id="9c5e09be-f359-4870-b622-a58a8bf4542a" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/controller/Controller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controller/Controller.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/models/DESEncryption.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/DESEncryption.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/view/View.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/View.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -153,7 +155,7 @@
       <workItem from="1699282260085" duration="8148000" />
       <workItem from="1699327215375" duration="2677000" />
       <workItem from="1699366672702" duration="2822000" />
-      <workItem from="1699407009698" duration="9398000" />
+      <workItem from="1699407009698" duration="14377000" />
     </task>
     <servers />
   </component>

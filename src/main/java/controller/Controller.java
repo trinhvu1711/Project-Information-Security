@@ -73,8 +73,8 @@ public class Controller {
                 int returnValue = fileChooser.showOpenDialog(null);
 
                 if (returnValue == JFileChooser.APPROVE_OPTION) {
-                    selectedFilePath = fileChooser.getSelectedFile().getAbsolutePath();
-                    view.getDecrypInputField().setText(selectedFilePath);
+                    selectedFileDecryptPath = fileChooser.getSelectedFile().getAbsolutePath();
+                    view.getDecrypInputField().setText(selectedFileDecryptPath);
                     lastSelectedDirectory = fileChooser.getSelectedFile().getParent();
                     isFileDecrypt= true;
                     fileNameDecrypt = fileChooser.getSelectedFile().getName();
@@ -95,39 +95,43 @@ public class Controller {
         view.getButtonCalculate().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-//                encrypt define
-                String inputText = view.getInputField().getText();
-                String key = view.getKeyField().getText();
-                List<JCheckBox> listCheckBox = getSelectedCheckboxes();
+                int selectedTabIndex = view.getTabbedPane().getSelectedIndex();
+                if (selectedTabIndex == 0){
+                    //                encrypt define
+                    String inputText = view.getInputField().getText();
+                    String key = view.getKeyField().getText();
+                    List<JCheckBox> listCheckBox = getSelectedCheckboxes();
 
-                if (listCheckBox != null) {
-                    for (JCheckBox jCheckBox:listCheckBox) {
-                        String result = calculateAlgorithm(jCheckBox, inputText, key);
-                        JTextField resultField = view.getCheckboxToResultFieldMap().get(jCheckBox);
-                        if (result != null) {
-                            resultField.setText(result);
+                    if (listCheckBox != null) {
+                        for (JCheckBox jCheckBox:listCheckBox) {
+                            String result = calculateAlgorithm(jCheckBox, inputText, key);
+                            JTextField resultField = view.getCheckboxToResultFieldMap().get(jCheckBox);
+                            if (result != null) {
+                                resultField.setText(result);
+                            }
                         }
                     }
                 }
-
-//                decrypt define
-                String inputTextDes = view.getDecrypInputField().getText();
-                String decryptKey = view.getDecryptKeyField().getText();
-                List<JCheckBox> listDecryptCheckBox = getSelectedDecryptCheckboxes();
+                else if(selectedTabIndex == 1){
+//                    decrypt define
+                    String inputTextDes = view.getDecrypInputField().getText();
+                    String decryptKey = view.getDecryptKeyField().getText();
+                    List<JCheckBox> listDecryptCheckBox = getSelectedDecryptCheckboxes();
 //                System.out.println(listDecryptCheckBox);
-                if (listDecryptCheckBox != null) {
-                    for (JCheckBox jCheckBox:listDecryptCheckBox) {
-                        String result = decryptAlgorithm(jCheckBox, inputTextDes, decryptKey);
-                        System.out.println(result);
-                        JTextField resultField = view.getCheckBoxResultDecryptMap().get(jCheckBox);
-                        if (result != null) {
-                            resultField.setText(result);
+                    if (listDecryptCheckBox != null) {
+                        for (JCheckBox jCheckBox:listDecryptCheckBox) {
+                            String result = decryptAlgorithm(jCheckBox, inputTextDes, decryptKey);
+                            System.out.println(result);
+                            JTextField resultField = view.getCheckBoxResultDecryptMap().get(jCheckBox);
+                            if (result != null) {
+                                resultField.setText(result);
+                            }
                         }
                     }
                 }
+
             }
         });
-
 
 //        add even listener for generate key
         view.getButtonGenerateKey().addActionListener(new ActionListener() {
@@ -216,9 +220,11 @@ public class Controller {
         }
         if (checkbox.getText().equals("DES")) {
             if (checkIsFileDecrypt()){
-                getOutputPath();
+                getOutputDecryptPath();
                 try {
-                    des.decryptFile(selectedFileDecryptPath, outputPath);
+                    System.out.println(outputDecryptPath);
+                    System.out.println(selectedFileDecryptPath);
+                    des.decryptFile(selectedFileDecryptPath, outputDecryptPath);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
@@ -307,7 +313,7 @@ public class Controller {
     }
 
     public boolean checkIsFileDecrypt() {
-        return isFileDecrypt && new File(selectedFileDecryptPath).isFile();
+        return isFileDecrypt;
     }
 
     public boolean checkKey(){
@@ -318,6 +324,7 @@ public class Controller {
         return !view.getDecryptKeyField().getText().isEmpty() && view.getDecryptKeyField().getText() != null && !new File(view.getDecryptKeyField().getText()).isFile();
     }
 
+    //    file path for encrypt output
     public void getOutputPath(){
         JFileChooser fileChooser = new JFileChooser();
         if (lastSelectedDirectory != null) {
@@ -333,6 +340,7 @@ public class Controller {
         }
     }
 
+//    file path for decrypt output
     public void getOutputDecryptPath(){
         JFileChooser fileChooser = new JFileChooser();
         if (lastSelectedDirectory != null) {
@@ -340,14 +348,21 @@ public class Controller {
         }
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         int returnValue = fileChooser.showOpenDialog(null);
+        System.out.println(fileNameDecrypt);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
-            outputPath = fileChooser.getSelectedFile().getAbsolutePath();
+            outputDecryptPath = fileChooser.getSelectedFile().getAbsolutePath();
+            if (fileNameDecrypt != null && !fileNameDecrypt.isEmpty()) {
+                fileNameDecrypt = fileNameDecrypt.replaceFirst("\\.zip$", "");
+                if (!fileNameDecrypt.endsWith("_decrypt.zip")) {
+                    fileNameDecrypt += "_decrypt.zip";
+                }
+                outputDecryptPath = outputDecryptPath + File.separator + fileNameDecrypt;
+            }
         }
-        if (fileNameDecrypt != null && !fileNameDecrypt.isEmpty()) {
-            outputPath = outputPath + File.separator + fileNameDecrypt;
-        }
+        System.out.println(fileNameDecrypt);
     }
 
+//    dialog
     public static void showMessageDialog(String message, String title, int messageType) {
         JOptionPane.showMessageDialog(null, message, title, messageType);
     }

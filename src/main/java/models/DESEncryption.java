@@ -55,7 +55,12 @@ public class DESEncryption implements EncryptionAlgorithm{
         File file = new File(sourceFile);
         if (file.isFile()){
             FileInputStream fis = new FileInputStream(file);
-            FileOutputStream fos = new FileOutputStream(destFile);
+            File dest = new File(destFile);
+            if (!dest.exists()) {
+                // Tạo tệp đích nếu nó chưa tồn tại
+                dest.createNewFile();
+            }
+            FileOutputStream fos = new FileOutputStream(dest);
             Cipher cipher = Cipher.getInstance("DES");
             cipher.init(Cipher.DECRYPT_MODE, key);
 

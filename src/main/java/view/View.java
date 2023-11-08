@@ -18,6 +18,7 @@ public class View {
     private Map<JCheckBox, JTextField> checkBoxResultDecryptMap = new HashMap<>();
     private JTextField inputField, decrypInputField;
     private JTextField keyField, decryptKeyField;
+    private JTabbedPane tabbedPane;
     private JComboBox<String> comboBox, comboBoxDecrypt;
     public View(){
         FlatLightLaf.setup();
@@ -26,7 +27,7 @@ public class View {
 
         JPanel mainPanel = new JPanel(new BorderLayout());
 
-        JTabbedPane tabbedPane = new JTabbedPane();
+        tabbedPane = new JTabbedPane();
 
         JPanel tab1 = new JPanel(new MigLayout());
         JPanel tab2 = new JPanel(new MigLayout());
@@ -289,5 +290,9 @@ public class View {
 
     public JComboBox<String> getComboBoxDecrypt() {
         return comboBoxDecrypt;
+    }
+
+    public JTabbedPane getTabbedPane() {
+        return tabbedPane;
     }
 }
