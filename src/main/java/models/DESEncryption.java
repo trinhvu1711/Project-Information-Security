@@ -44,6 +44,7 @@ public class DESEncryption implements EncryptionAlgorithm{
             if (output != null) fos.write(output);
             fis.close();
             fos.flush();
+            fos.close();
             System.out.println("done encrypt");
         }
         else {
@@ -75,6 +76,7 @@ public class DESEncryption implements EncryptionAlgorithm{
             if (output != null) fos.write(output);
             fis.close();
             fos.flush();
+            fos.close();
             System.out.println("done decrypt");
         }
         else {

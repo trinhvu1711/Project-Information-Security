@@ -199,6 +199,10 @@ public class Controller {
             // add encrypt algorithm
             algorithmResult = new SHA256().calculate(inputText);
         }
+
+        if (checkbox.getText().equals("RSA")){
+            algorithmResult = new RSA().calculate(inputText);
+        }
         return algorithmResult;
     }
 
@@ -207,16 +211,16 @@ public class Controller {
         String algorithmResult = "";
 
         if (checkbox.getText().equals("Ceasar")) {
-            algorithmResult = new CaesarCipher(Integer.valueOf(key)).calculate(inputText);
+            algorithmResult = new CaesarCipher(Integer.valueOf(key)).decrypt(inputText);
         }
         if (checkbox.getText().equals("Vigenere")) {
-            algorithmResult = new VigenereCipher(key).calculate(inputText);
+            algorithmResult = new VigenereCipher(key).decrypt(inputText);
         }
         if (checkbox.getText().equals("Twofish")) {
-            algorithmResult = twofish.calculate(inputText);
+            algorithmResult = twofish.decrypt(inputText);
         }
         if (checkbox.getText().equals("Serpent")) {
-            algorithmResult =serpent.calculate(inputText);
+            algorithmResult =serpent.decrypt(inputText);
         }
         if (checkbox.getText().equals("DES")) {
             if (checkIsFileDecrypt()){
@@ -235,16 +239,9 @@ public class Controller {
         }
         if (checkbox.getText().equals("AES")) {
             // add encrypt algorithm
-            algorithmResult = aes.calculate(inputText);
+            algorithmResult = aes.decrypt(inputText);
         }
-        if (checkbox.getText().equals("MD5")) {
-            // add encrypt algorithm
-            algorithmResult = new MD5().calculate(inputText);
-        }
-        if (checkbox.getText().equals("SHA256")) {
-            // add encrypt algorithm
-            algorithmResult = new SHA256().calculate(inputText);
-        }
+
         return algorithmResult;
     }
 
@@ -278,6 +275,16 @@ public class Controller {
         }
         if (checkbox.getText().equals("SHA256")) {
             System.out.println("SHA256");
+        }
+
+        if (checkbox.getText().equals("RSA")){
+            rsa = new RSA();
+            try {
+                rsa.generateKey();
+//                key
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
         return key;
     }

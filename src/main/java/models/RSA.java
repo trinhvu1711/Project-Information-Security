@@ -4,7 +4,11 @@ import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
+import java.nio.file.Files;
 import java.security.*;
+import java.security.spec.EncodedKeySpec;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 
 public class RSA implements EncryptionAlgorithm{
@@ -101,15 +105,66 @@ public class RSA implements EncryptionAlgorithm{
         bufferedOutputStream.close();
     }
 
+    public void storingPublicKey(String publicKeyFilePath){
+        try {
+            PublicKey publicKey = keyPair.getPublic();
+            try (FileOutputStream fos = new FileOutputStream(publicKeyFilePath)) {
+                fos.write(publicKey.getEncoded());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void storingPrivateKey(String privateKeyFilePath){
+        PrivateKey privateKey = keyPair.getPrivate();
+        try (FileOutputStream fos = new FileOutputStream(privateKeyFilePath)) {
+            fos.write(privateKey.getEncoded());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public PublicKey readPublicKey(String publicKeyFilePath) throws Exception{
+        File publicKeyFile = new File(publicKeyFilePath);
+        byte[] publicKeyBytes = Files.readAllBytes(publicKeyFile.toPath());
+        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+        EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(publicKeyBytes);
+        return keyFactory.generatePublic(publicKeySpec);
+    }
+
+    public PrivateKey readPrivateKey(String privateKeyFilePath) throws  Exception{
+        File privateKeyFile = new File(privateKeyFilePath);
+        byte[] privateKeyBytes = Files.readAllBytes(privateKeyFile.toPath());
+        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+        PKCS8EncodedKeySpec privateKeySpec = new PKCS8EncodedKeySpec(privateKeyBytes);
+        return keyFactory.generatePrivate(privateKeySpec);
+    }
+
     public static void main(String[] args) throws Exception{
         String test = "trinhvu";
         RSA rsa = new RSA();
         rsa.generateKey();
+        System.out.println("public key : \n"+ Base64.getEncoder().encodeToString(rsa.publicKey.getEncoded()));
+        System.out.println("private key : \n"+ Base64.getEncoder().encodeToString(rsa.privateKey.getEncoded()));
         String encrypt = rsa.calculate(test);
         String decrypt = rsa.decrypt(encrypt);
         System.out.println(encrypt);
         System.out.println(decrypt);
-        rsa.FileEncrypt("D:\\VuxBaox\\University Document\\Semester 7\\test_attt\\rsa_input\\rsa_input.zip", "D:\\VuxBaox\\University Document\\Semester 7\\test_attt\\rsa_output\\rsa_output.zip");
-        rsa.fileDecrypt("D:\\VuxBaox\\University Document\\Semester 7\\test_attt\\rsa_output\\rsa_output.zip", "D:\\VuxBaox\\University Document\\Semester 7\\test_attt\\rsa_output\\rsa_output_des.zip");
+        String publicKeyPath = "D:\\VuxBaox\\University Document\\Semester 7\\test_attt\\rsa_output\\publicKey.key";
+        String privateKeyPath = "D:\\VuxBaox\\University Document\\Semester 7\\test_attt\\rsa_output\\privateKey.key";
+        rsa.storingPublicKey(publicKeyPath);
+        rsa.storingPrivateKey(privateKeyPath);
+        PublicKey publicKey = rsa.readPublicKey(publicKeyPath);
+        PrivateKey privateKey = rsa.readPrivateKey(privateKeyPath);
+        System.out.println("public key : \n"+ Base64.getEncoder().encodeToString(publicKey.getEncoded()));
+        System.out.println("private key : \n"+ Base64.getEncoder().encodeToString(privateKey.getEncoded()));
+        System.out.println(Base64.getEncoder().encodeToString(rsa.publicKey.getEncoded()).equals(Base64.getEncoder().encodeToString(publicKey.getEncoded())));
+        System.out.println(Base64.getEncoder().encodeToString(rsa.privateKey.getEncoded()).equals(Base64.getEncoder().encodeToString(privateKey.getEncoded())));
+//        rsa.FileEncrypt("D:\\VuxBaox\\University Document\\Semester 7\\test_attt\\rsa_input\\rsa_input.zip", "D:\\VuxBaox\\University Document\\Semester 7\\test_attt\\rsa_output\\rsa_output.zip");
+//        rsa.fileDecrypt("D:\\VuxBaox\\University Document\\Semester 7\\test_attt\\rsa_output\\rsa_output.zip", "D:\\VuxBaox\\University Document\\Semester 7\\test_attt\\rsa_output\\rsa_output_des.zip");
     }
 }
+
+
+

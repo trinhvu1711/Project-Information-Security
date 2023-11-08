@@ -132,8 +132,8 @@ public class View {
             }
         }
 
+//      set default width for text field
         int maxWidth = 70;
-
         for (Map.Entry<JCheckBox, JTextField> entry : checkboxToResultFieldMap.entrySet()) {
             JCheckBox checkBox = entry.getKey();
             checkBox.setMinimumSize(new Dimension(maxWidth, checkBox.getPreferredSize().height));
@@ -168,9 +168,13 @@ public class View {
         keyPanelDecrypt.add(decryptKeyField, "grow, height 30:30:30");
 
 //        start tab 2
+
+        //        Result panel 4
         JPanel resultPanel4 = new JPanel(new MigLayout("fillx", "[pref!][grow]"));
         Border border6 = BorderFactory.createTitledBorder("Symmetric Encryption");
         resultPanel4.setBorder(BorderFactory.createCompoundBorder(border6, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+
+//       SymmetricDecryption
         String[] SymmetricDecryption = new String[] {"Ceasar", "Vigenere", "Twofish", "Serpent", "DES", "AES"};
         JCheckBox[] checkBoxAlgorithms4 = new JCheckBox[SymmetricDecryption.length];
         JTextField[] resultFields4 = new JTextField[SymmetricDecryption.length];
@@ -189,6 +193,33 @@ public class View {
             }
         }
 
+//        Result panel 5
+        JPanel resultPanel5 = new JPanel(new MigLayout("fillx", "[pref!][grow]"));
+        Border border7 = BorderFactory.createTitledBorder("Asymmetric Encryption");
+        resultPanel5.setBorder(BorderFactory.createCompoundBorder(border7, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+        String[] AsymmetricDecryption = new String[] {"RSA"};
+        JCheckBox[] checkBoxAlgorithms5 = new JCheckBox[AsymmetricDecryption.length];
+        JTextField[] resultFields5 = new JTextField[AsymmetricDecryption.length];
+
+        for (int i = 0; i < AsymmetricDecryption.length; i++) {
+            checkBoxAlgorithms5[i] = new JCheckBox(AsymmetricDecryption[i]);
+            resultFields5[i] = new JTextField(90);
+            checkBoxResultDecryptMap.put(checkBoxAlgorithms5[i],resultFields5[i]);
+        }
+
+        for (int i = 0; i < AsymmetricDecryption.length; i++) {
+            resultPanel5.add(checkBoxAlgorithms5[i], "gapright 10");
+            resultPanel5.add(resultFields5[i], "grow");
+            if (i < AsymmetricDecryption.length -1 ) {
+                resultPanel5.add(resultFields5[i], "grow, wrap");
+            }
+        }
+
+//      set default width for text field
+        for (Map.Entry<JCheckBox, JTextField> entry : checkBoxResultDecryptMap.entrySet()) {
+            JCheckBox checkBox = entry.getKey();
+            checkBox.setMinimumSize(new Dimension(maxWidth, checkBox.getPreferredSize().height));
+        }
 //        done tab 2
 
 //        start tab 3
@@ -215,6 +246,7 @@ public class View {
         tab2.add(inputDecryptPanel, "width max(1200), wrap");
         tab2.add(keyPanelDecrypt, "width max(1200), wrap");
         tab2.add(resultPanel4, "width max(1200), wrap");
+        tab2.add(resultPanel5, "width max(1200), wrap");
 
         mainPanel.add(tabbedPane, BorderLayout.CENTER);
         mainPanel.add(funcPanel, BorderLayout.SOUTH);
