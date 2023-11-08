@@ -4,11 +4,8 @@ import models.*;
 import view.View;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.io.File;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -157,7 +154,10 @@ public class Controller {
 //    add Algorithm Encrypt event
     private String calculateAlgorithm(JCheckBox checkbox, String inputText, String key) {
         String algorithmResult = "";
-
+        if(key == null || key.isEmpty()) {
+            showMessageDialog("Key null", "Key error", JOptionPane.ERROR_MESSAGE);
+            return "";
+        }
         if (checkbox.getText().equals("Ceasar")) {
             algorithmResult = new CaesarCipher(Integer.valueOf(key)).calculate(inputText);
         }
@@ -184,15 +184,15 @@ public class Controller {
 
         }
         if (checkbox.getText().equals("AES")) {
-            // Use the first algorithm (replace with your specific implementation)
+            // add encrypt algorithm
             algorithmResult = aes.calculate(inputText);
         }
         if (checkbox.getText().equals("MD5")) {
-            // Use the first algorithm (replace with your specific implementation)
+            // add encrypt algorithm
             algorithmResult = new MD5().calculate(inputText);
         }
         if (checkbox.getText().equals("SHA256")) {
-            // Use the first algorithm (replace with your specific implementation)
+            // add encrypt algorithm
             algorithmResult = new SHA256().calculate(inputText);
         }
         return algorithmResult;
@@ -228,15 +228,15 @@ public class Controller {
             }
         }
         if (checkbox.getText().equals("AES")) {
-            // Use the first algorithm (replace with your specific implementation)
+            // add encrypt algorithm
             algorithmResult = aes.calculate(inputText);
         }
         if (checkbox.getText().equals("MD5")) {
-            // Use the first algorithm (replace with your specific implementation)
+            // add encrypt algorithm
             algorithmResult = new MD5().calculate(inputText);
         }
         if (checkbox.getText().equals("SHA256")) {
-            // Use the first algorithm (replace with your specific implementation)
+            // add encrypt algorithm
             algorithmResult = new SHA256().calculate(inputText);
         }
         return algorithmResult;
@@ -244,7 +244,7 @@ public class Controller {
 
 //    add generate key encrypt
     private String generateKey(JCheckBox checkbox) throws NoSuchAlgorithmException {
-        // Determine which algorithm
+        // add generate key algorithm
         String key = "";
         if (checkbox.getText().equals("AES")) {
             aes = new AESEncryption();
@@ -346,5 +346,9 @@ public class Controller {
         if (fileNameDecrypt != null && !fileNameDecrypt.isEmpty()) {
             outputPath = outputPath + File.separator + fileNameDecrypt;
         }
+    }
+
+    public static void showMessageDialog(String message, String title, int messageType) {
+        JOptionPane.showMessageDialog(null, message, title, messageType);
     }
 }
