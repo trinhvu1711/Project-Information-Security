@@ -1,6 +1,7 @@
 package models;
 
 import javax.crypto.*;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -109,10 +110,33 @@ public class DESEncryption implements EncryptionAlgorithm{
         return key;
     }
 
+    public void setKey(SecretKey key) {
+        this.key = key;
+    }
+
+    public void setKeyFromText(String keyText) {
+        if (keyText.length() != 16) {
+            throw new IllegalArgumentException("Key length should be 16 characters (128 bits)");
+        }
+        SecretKey key = VietnameseTextHelper.hexStringToSecretKey(keyText);
+        setKey(key);
+    }
+
     public static void main(String[] args) throws Exception {
         String msg = "vudeptrai";
         DESEncryption desEncryption = new DESEncryption();
-        desEncryption.generateKey();
+//        desEncryption.generateKey();
+//        System.out.println(desEncryption.key);
+//        String encrypt = desEncryption.calculate(msg);
+//        String decrypt = desEncryption.decrypt(encrypt);
+//        System.out.println(encrypt);
+//        System.out.println(decrypt);
+//        String sourcePath = "D:\\VuxBaox\\University Document\\Semester 7\\test_attt\\des_input\\des_input.zip";
+//        String descPath = "D:\\VuxBaox\\University Document\\Semester 7\\test_attt\\des_output\\des_output.zip";
+//        String descResultPath = "D:\\VuxBaox\\University Document\\Semester 7\\test_attt\\des_output\\des_result.zip";
+//        desEncryption.encryptFile(sourcePath, descPath);
+//        desEncryption.decryptFile(descPath, descResultPath);
+        desEncryption.setKeyFromText("E6315B2354235B83");
         System.out.println(desEncryption.key);
         String encrypt = desEncryption.calculate(msg);
         String decrypt = desEncryption.decrypt(encrypt);

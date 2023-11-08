@@ -4,22 +4,32 @@ import models.*;
 import view.View;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.io.File;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class Controller {
-    private View view;
-    Serpent serpent = new Serpent();
-    RSA rsa = new RSA();
-    DESEncryption des = new DESEncryption();
-    AESEncryption aes = new AESEncryption();
-    Twofish twofish = new Twofish();
+    private final View view;
+    Serpent serpent;
+    RSA rsa;
+    DESEncryption des;
+    AESEncryption aes;
+    Twofish twofish;
+    boolean isFileEncrypt = false;
+    boolean isFileDecrypt = false;
+    String lastSelectedDirectory = "";
+    String selectedFilePath = "";
+    String outputPath = "";
+    String selectedFileDecryptPath = "";
+    String outputDecryptPath = "";
+    String fileName, fileNameDecrypt;
 
     public Controller(View view) {
         this.view = view;
@@ -36,12 +46,42 @@ public class Controller {
             }
         });
 
-        // Thêm sự kiện cho buttonFromFile
+        // Thêm sự kiện cho buttonFromFile encrypt
         view.getButtonFromFile().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Xử lý sự kiện cho buttonFromFile ở đây
-                System.out.println("getButtonFromFile");
+                JFileChooser fileChooser = new JFileChooser();
+                if (lastSelectedDirectory != null) {
+                    fileChooser.setCurrentDirectory(new File(lastSelectedDirectory));
+                }
+                int returnValue = fileChooser.showOpenDialog(null);
+
+                if (returnValue == JFileChooser.APPROVE_OPTION) {
+                    selectedFilePath = fileChooser.getSelectedFile().getAbsolutePath();
+                    view.getInputField().setText(selectedFilePath);
+                    lastSelectedDirectory = fileChooser.getSelectedFile().getParent();
+                    isFileEncrypt = true;
+                    fileName = fileChooser.getSelectedFile().getName();
+                }
+            }
+        });
+
+        view.getButtonFromFileDecrypt().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser fileChooser = new JFileChooser();
+                if (lastSelectedDirectory != null) {
+                    fileChooser.setCurrentDirectory(new File(lastSelectedDirectory));
+                }
+                int returnValue = fileChooser.showOpenDialog(null);
+
+                if (returnValue == JFileChooser.APPROVE_OPTION) {
+                    selectedFilePath = fileChooser.getSelectedFile().getAbsolutePath();
+                    view.getDecrypInputField().setText(selectedFilePath);
+                    lastSelectedDirectory = fileChooser.getSelectedFile().getParent();
+                    isFileDecrypt= true;
+                    fileNameDecrypt = fileChooser.getSelectedFile().getName();
+                }
             }
         });
 
@@ -58,21 +98,31 @@ public class Controller {
         view.getButtonCalculate().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Xử lý tính toán và hiển thị kết quả ở đây
-                // Lấy giá trị từ input và key field
+//                encrypt define
                 String inputText = view.getInputField().getText();
                 String key = view.getKeyField().getText();
-                // Lấy checkbox đã chọn
                 List<JCheckBox> listCheckBox = getSelectedCheckboxes();
-//                System.out.println(listCheckBox.get(0).getText());
-                // Kiểm tra xem checkbox có được chọn không
+
                 if (listCheckBox != null) {
-                    // Thực hiện tính toán dựa trên checkbox, input và key
                     for (JCheckBox jCheckBox:listCheckBox) {
                         String result = calculateAlgorithm(jCheckBox, inputText, key);
-                        System.out.println(result);
-                        // Hiển thị kết quả lên result field tương ứng
                         JTextField resultField = view.getCheckboxToResultFieldMap().get(jCheckBox);
+                        if (result != null) {
+                            resultField.setText(result);
+                        }
+                    }
+                }
+
+//                decrypt define
+                String inputTextDes = view.getDecrypInputField().getText();
+                String decryptKey = view.getDecryptKeyField().getText();
+                List<JCheckBox> listDecryptCheckBox = getSelectedDecryptCheckboxes();
+//                System.out.println(listDecryptCheckBox);
+                if (listDecryptCheckBox != null) {
+                    for (JCheckBox jCheckBox:listDecryptCheckBox) {
+                        String result = decryptAlgorithm(jCheckBox, inputTextDes, decryptKey);
+                        System.out.println(result);
+                        JTextField resultField = view.getCheckBoxResultDecryptMap().get(jCheckBox);
                         if (result != null) {
                             resultField.setText(result);
                         }
@@ -80,6 +130,7 @@ public class Controller {
                 }
             }
         });
+
 
 //        add even listener for generate key
         view.getButtonGenerateKey().addActionListener(new ActionListener() {
@@ -103,31 +154,34 @@ public class Controller {
         });
     }
 
-//    add Algorithm
+//    add Algorithm Encrypt event
     private String calculateAlgorithm(JCheckBox checkbox, String inputText, String key) {
-        // Determine which algorithm to use based on the checkbox
         String algorithmResult = "";
 
         if (checkbox.getText().equals("Ceasar")) {
-            // Use the first algorithm (replace with your specific implementation)
             algorithmResult = new CaesarCipher(Integer.valueOf(key)).calculate(inputText);
         }
         if (checkbox.getText().equals("Vigenere")) {
-            // Use the first algorithm (replace with your specific implementation)
             algorithmResult = new VigenereCipher(key).calculate(inputText);
         }
         if (checkbox.getText().equals("Twofish")) {
-            // Use the first algorithm (replace with your specific implementation)
             algorithmResult = twofish.calculate(inputText);
         }
         if (checkbox.getText().equals("Serpent")) {
-            // Use the first algorithm (replace with your specific implementation)
-
             algorithmResult =serpent.calculate(inputText);
         }
         if (checkbox.getText().equals("DES")) {
-            // Use the first algorithm (replace with your specific implementation)
-            algorithmResult = des.calculate(inputText);
+            if (checkIsFile()){
+                getOutputPath();
+                try {
+                    des.encryptFile(selectedFilePath, outputPath);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }else{
+                algorithmResult = des.calculate(inputText);
+            }
+
         }
         if (checkbox.getText().equals("AES")) {
             // Use the first algorithm (replace with your specific implementation)
@@ -144,40 +198,87 @@ public class Controller {
         return algorithmResult;
     }
 
-    private String generateKey(JCheckBox checkbox) throws NoSuchAlgorithmException {
-        // Determine which algorithm to use based on the checkbox
-        String key = "";
+    //    add Algorithm Decrypt event
+    private String decryptAlgorithm(JCheckBox checkbox, String inputText, String key) {
+        String algorithmResult = "";
+
+        if (checkbox.getText().equals("Ceasar")) {
+            algorithmResult = new CaesarCipher(Integer.valueOf(key)).calculate(inputText);
+        }
+        if (checkbox.getText().equals("Vigenere")) {
+            algorithmResult = new VigenereCipher(key).calculate(inputText);
+        }
+        if (checkbox.getText().equals("Twofish")) {
+            algorithmResult = twofish.calculate(inputText);
+        }
+        if (checkbox.getText().equals("Serpent")) {
+            algorithmResult =serpent.calculate(inputText);
+        }
+        if (checkbox.getText().equals("DES")) {
+            if (checkIsFileDecrypt()){
+                getOutputPath();
+                try {
+                    des.decryptFile(selectedFileDecryptPath, outputPath);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }else if(checkKeyDecrypt()) {
+                des.setKeyFromText(view.getDecryptKeyField().getText());
+                algorithmResult = des.decrypt(inputText);
+            }
+        }
         if (checkbox.getText().equals("AES")) {
             // Use the first algorithm (replace with your specific implementation)
+            algorithmResult = aes.calculate(inputText);
+        }
+        if (checkbox.getText().equals("MD5")) {
+            // Use the first algorithm (replace with your specific implementation)
+            algorithmResult = new MD5().calculate(inputText);
+        }
+        if (checkbox.getText().equals("SHA256")) {
+            // Use the first algorithm (replace with your specific implementation)
+            algorithmResult = new SHA256().calculate(inputText);
+        }
+        return algorithmResult;
+    }
+
+//    add generate key encrypt
+    private String generateKey(JCheckBox checkbox) throws NoSuchAlgorithmException {
+        // Determine which algorithm
+        String key = "";
+        if (checkbox.getText().equals("AES")) {
             aes = new AESEncryption();
             aes.generateKey();
             key = VietnameseTextHelper.bytesToHex(aes.getKey().getEncoded());
         }
         if (checkbox.getText().equals("DES")) {
-            // Use the first algorithm (replace with your specific implementation)
             des = new DESEncryption();
             des.generateKey();
             key = VietnameseTextHelper.bytesToHex(des.getKey().getEncoded());
         }
         if (checkbox.getText().equals("Twofish")) {
-            // Use the first algorithm (replace with your specific implementation)
             twofish = new Twofish();
             twofish.generateKey();
             key = VietnameseTextHelper.bytesToHex(twofish.getKey().getEncoded());
         }
 
         if (checkbox.getText().equals("Serpent")) {
-            // Use the first algorithm (replace with your specific implementation)
             serpent= new Serpent();
             serpent.generateKey();
             key = VietnameseTextHelper.bytesToHex(serpent.getKey().getEncoded());
+        }
+        if (checkbox.getText().equals("MD5")) {
+            System.out.println("MD5");
+        }
+        if (checkbox.getText().equals("SHA256")) {
+            System.out.println("SHA256");
         }
         return key;
     }
 
 
     public List<JCheckBox> getSelectedCheckboxes() {
-        List<JCheckBox> selectedCheckboxes = new ArrayList<>();
+        ArrayList<JCheckBox> selectedCheckboxes = new ArrayList<>();
 
         for (Map.Entry<JCheckBox, JTextField> entry : view.getCheckboxToResultFieldMap().entrySet()) {
             JCheckBox checkbox = entry.getKey();
@@ -187,5 +288,63 @@ public class Controller {
         }
 
         return selectedCheckboxes;
+    }
+
+    public List<JCheckBox> getSelectedDecryptCheckboxes() {
+        ArrayList<JCheckBox> selectedCheckboxes = new ArrayList<>();
+
+        for (Map.Entry<JCheckBox, JTextField> entry : view.getCheckBoxResultDecryptMap().entrySet()) {
+            JCheckBox checkbox = entry.getKey();
+            if (checkbox.isSelected()) {
+                selectedCheckboxes.add(checkbox);
+            }
+        }
+        return selectedCheckboxes;
+    }
+
+    public boolean checkIsFile() {
+        return isFileEncrypt && new File(selectedFilePath).isFile();
+    }
+
+    public boolean checkIsFileDecrypt() {
+        return isFileDecrypt && new File(selectedFileDecryptPath).isFile();
+    }
+
+    public boolean checkKey(){
+        return view.getKeyField().getText().isEmpty() && view.getKeyField().getText() != null && !new File(view.getKeyField().getText()).isFile();
+    }
+
+    public boolean checkKeyDecrypt(){
+        return !view.getDecryptKeyField().getText().isEmpty() && view.getDecryptKeyField().getText() != null && !new File(view.getDecryptKeyField().getText()).isFile();
+    }
+
+    public void getOutputPath(){
+        JFileChooser fileChooser = new JFileChooser();
+        if (lastSelectedDirectory != null) {
+            fileChooser.setCurrentDirectory(new File(lastSelectedDirectory));
+        }
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        int returnValue = fileChooser.showOpenDialog(null);
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            outputPath = fileChooser.getSelectedFile().getAbsolutePath();
+        }
+        if (fileName != null && !fileName.isEmpty()) {
+            outputPath = outputPath + File.separator + fileName;
+        }
+    }
+
+    public void getOutputDecryptPath(){
+        JFileChooser fileChooser = new JFileChooser();
+        if (lastSelectedDirectory != null) {
+            fileChooser.setCurrentDirectory(new File(lastSelectedDirectory));
+        }
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        int returnValue = fileChooser.showOpenDialog(null);
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            outputPath = fileChooser.getSelectedFile().getAbsolutePath();
+        }
+        if (fileNameDecrypt != null && !fileNameDecrypt.isEmpty()) {
+            outputPath = outputPath + File.separator + fileNameDecrypt;
+        }
     }
 }

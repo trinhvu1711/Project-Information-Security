@@ -15,12 +15,7 @@ public class View {
     private JButton buttonFromClipboard, buttonFromClipboardDecrypt;
     private JButton buttonFromFile, buttonFromFileDecrypt, buttonClose, buttonCalculate,buttonGenerateKey;
     private Map<JCheckBox, JTextField> checkboxToResultFieldMap = new HashMap<>();
-//    private JCheckBox checkBoxAlgorithm1;
-//    private JCheckBox checkBoxAlgorithm2;
-//    private JCheckBox checkBoxAlgorithm3;
-//    private JTextField resultField1;
-//    private JTextField resultField2;
-//    private JTextField resultField3;
+    private Map<JCheckBox, JTextField> checkBoxResultDecryptMap = new HashMap<>();
     private JTextField inputField, decrypInputField;
     private JTextField keyField, decryptKeyField;
     private JComboBox<String> comboBox, comboBoxDecrypt;
@@ -182,7 +177,7 @@ public class View {
         for (int i = 0; i < SymmetricDecryption.length; i++) {
             checkBoxAlgorithms4[i] = new JCheckBox(SymmetricDecryption[i]);
             resultFields4[i] = new JTextField(90);
-            checkboxToResultFieldMap.put(checkBoxAlgorithms4[i],resultFields4[i]);
+            checkBoxResultDecryptMap.put(checkBoxAlgorithms4[i],resultFields4[i]);
         }
 
         for (int i = 0; i < SymmetricDecryption.length; i++) {
@@ -270,5 +265,29 @@ public class View {
 
     public JButton getButtonGenerateKey() {
         return buttonGenerateKey;
+    }
+
+    public JButton getButtonFromClipboardDecrypt() {
+        return buttonFromClipboardDecrypt;
+    }
+
+    public JButton getButtonFromFileDecrypt() {
+        return buttonFromFileDecrypt;
+    }
+
+    public Map<JCheckBox, JTextField> getCheckBoxResultDecryptMap() {
+        return checkBoxResultDecryptMap;
+    }
+
+    public JTextField getDecrypInputField() {
+        return decrypInputField;
+    }
+
+    public JTextField getDecryptKeyField() {
+        return decryptKeyField;
+    }
+
+    public JComboBox<String> getComboBoxDecrypt() {
+        return comboBoxDecrypt;
     }
 }
