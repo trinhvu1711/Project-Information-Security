@@ -7,6 +7,9 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -326,5 +329,21 @@ public class View {
 
     public JTabbedPane getTabbedPane() {
         return tabbedPane;
+    }
+
+    public void showPublicPrivateKey(PublicKey publicKey, PrivateKey privateKey){
+        JTextField xField = new JTextField();
+        JTextField yField = new JTextField();
+        JPanel myPanel = new JPanel(new MigLayout());
+
+        xField.setText(Base64.getEncoder().encodeToString(publicKey.getEncoded()));
+        yField.setText(Base64.getEncoder().encodeToString(privateKey.getEncoded()));
+
+        myPanel.add(new JLabel("Public key:"));
+        myPanel.add(xField, "width 100:1000, growx, wrap");
+        myPanel.add(new JLabel("Private key:"));
+        myPanel.add(yField, "width 100:1000, growx, wrap");
+
+        JOptionPane.showMessageDialog(frame, myPanel,"Public Key and Private Key", JOptionPane.PLAIN_MESSAGE );
     }
 }

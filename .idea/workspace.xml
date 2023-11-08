@@ -7,7 +7,6 @@
     <list default="true" id="9c5e09be-f359-4870-b622-a58a8bf4542a" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/controller/Controller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controller/Controller.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/models/DESEncryption.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/DESEncryption.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/models/RSA.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/RSA.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/view/View.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/View.java" afterDir="false" />
     </list>
@@ -64,7 +63,7 @@
       <recent name="" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.RSA">
+  <component name="RunManager" selected="Application.Main">
     <configuration name="DESEncryption" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="models.DESEncryption" />
       <module name="Project-Information-Security" />
@@ -126,8 +125,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.RSA" />
         <item itemvalue="Application.Main" />
+        <item itemvalue="Application.RSA" />
         <item itemvalue="Application.DESEncryption" />
         <item itemvalue="Application.VigenereCipher" />
         <item itemvalue="Application.Serpent" />
@@ -157,7 +156,7 @@
       <workItem from="1699327215375" duration="2677000" />
       <workItem from="1699366672702" duration="2822000" />
       <workItem from="1699407009698" duration="17145000" />
-      <workItem from="1699462606572" duration="7136000" />
+      <workItem from="1699462606572" duration="10871000" />
     </task>
     <servers />
   </component>

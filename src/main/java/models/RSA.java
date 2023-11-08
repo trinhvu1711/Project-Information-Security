@@ -53,7 +53,7 @@ public class RSA implements EncryptionAlgorithm{
         }
         return new String(result);
     }
-    public void FileEncrypt(String inputPath, String outputPath) throws Exception {
+    public void fileEncrypt(String inputPath, String outputPath) throws Exception {
         KeyGenerator keyGen = KeyGenerator.getInstance("AES");
         keyGen.init(256);
         byte[] iv = new byte[16];
@@ -163,6 +163,38 @@ public class RSA implements EncryptionAlgorithm{
         System.out.println(Base64.getEncoder().encodeToString(rsa.privateKey.getEncoded()).equals(Base64.getEncoder().encodeToString(privateKey.getEncoded())));
 //        rsa.FileEncrypt("D:\\VuxBaox\\University Document\\Semester 7\\test_attt\\rsa_input\\rsa_input.zip", "D:\\VuxBaox\\University Document\\Semester 7\\test_attt\\rsa_output\\rsa_output.zip");
 //        rsa.fileDecrypt("D:\\VuxBaox\\University Document\\Semester 7\\test_attt\\rsa_output\\rsa_output.zip", "D:\\VuxBaox\\University Document\\Semester 7\\test_attt\\rsa_output\\rsa_output_des.zip");
+    }
+
+    public KeyPair getKeyPair() {
+        return keyPair;
+    }
+
+    public void setKeyPair(KeyPair keyPair) {
+        this.keyPair = keyPair;
+    }
+
+    public PublicKey getPublicKey() {
+        return publicKey;
+    }
+
+    public void setPublicKey(PublicKey publicKey) {
+        this.publicKey = publicKey;
+    }
+
+    public PrivateKey getPrivateKey() {
+        return privateKey;
+    }
+
+    public void setPrivateKey(PrivateKey privateKey) {
+        this.privateKey = privateKey;
+    }
+
+    public void setPrivateKeyFromString(String privateKeyString) throws Exception{
+        byte[] privateKeyBytes = Base64.getDecoder().decode(privateKeyString); // Giả sử chuỗi chứa dữ liệu base64
+
+        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+        PKCS8EncodedKeySpec privateKeySpec = new PKCS8EncodedKeySpec(privateKeyBytes);
+        setPrivateKey(keyFactory.generatePrivate(privateKeySpec));
     }
 }
 

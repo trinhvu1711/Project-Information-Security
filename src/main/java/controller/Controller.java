@@ -1,6 +1,7 @@
 package controller;
 
 import models.*;
+import net.miginfocom.swing.MigLayout;
 import view.View;
 
 import javax.swing.*;
@@ -8,7 +9,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
@@ -201,7 +205,17 @@ public class Controller {
         }
 
         if (checkbox.getText().equals("RSA")){
-            algorithmResult = new RSA().calculate(inputText);
+            if (checkIsFile()){
+                getOutputPath();
+                try {
+                    rsa.fileEncrypt(selectedFilePath, outputPath);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }else{
+                algorithmResult = rsa.calculate(inputText);
+            }
+
         }
         return algorithmResult;
     }
@@ -240,6 +254,24 @@ public class Controller {
         if (checkbox.getText().equals("AES")) {
             // add encrypt algorithm
             algorithmResult = aes.decrypt(inputText);
+        }
+
+        if (checkbox.getText().equals("RSA")){
+            if (checkIsFileDecrypt()) {
+                getOutputDecryptPath();
+                try {
+                    rsa.fileDecrypt(selectedFileDecryptPath, outputDecryptPath);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }else {
+                try {
+                    rsa.setPrivateKeyFromString(view.getDecryptKeyField().getText());
+                    algorithmResult = rsa.decrypt(inputText);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
 
         return algorithmResult;
@@ -281,7 +313,8 @@ public class Controller {
             rsa = new RSA();
             try {
                 rsa.generateKey();
-//                key
+                key = Base64.getEncoder().encodeToString(rsa.getPrivateKey().getEncoded());
+                view.showPublicPrivateKey(rsa.getPublicKey(), rsa.getPrivateKey());
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -373,4 +406,6 @@ public class Controller {
     public static void showMessageDialog(String message, String title, int messageType) {
         JOptionPane.showMessageDialog(null, message, title, messageType);
     }
+
+
 }
