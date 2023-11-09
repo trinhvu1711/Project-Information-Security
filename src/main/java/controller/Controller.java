@@ -25,7 +25,7 @@ public class Controller {
     Twofish twofish;
     boolean isFileEncrypt = false;
     boolean isFileDecrypt = false;
-    String lastSelectedDirectory = "";
+    String lastSelectedDirectory = "D:\\VuxBaox\\University Document\\Semester 7\\test_attt";
     String selectedFilePath = "";
     String outputPath = "";
     String selectedFileDecryptPath = "";
@@ -192,8 +192,17 @@ public class Controller {
 
         }
         if (checkbox.getText().equals("AES")) {
-            // add encrypt algorithm
-            algorithmResult = aes.calculate(inputText);
+            if (checkIsFile()){
+                getOutputPath();
+                try {
+                    aes.encryptFile(selectedFilePath, outputPath);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }else{
+                algorithmResult = aes.calculate(inputText);
+            }
+
         }
         if (checkbox.getText().equals("MD5")) {
             // add encrypt algorithm
@@ -252,8 +261,20 @@ public class Controller {
             }
         }
         if (checkbox.getText().equals("AES")) {
-            // add encrypt algorithm
-            algorithmResult = aes.decrypt(inputText);
+            if (checkIsFileDecrypt()){
+                getOutputDecryptPath();
+                try {
+                    System.out.println(outputDecryptPath);
+                    System.out.println(selectedFileDecryptPath);
+                    aes.decryptFile(selectedFileDecryptPath, outputDecryptPath);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }else if(checkKeyDecrypt()) {
+                aes.setAESKeyFromString(view.getDecryptKeyField().getText());
+                algorithmResult = aes.decrypt(inputText);
+            }
+
         }
 
         if (checkbox.getText().equals("RSA")){
@@ -284,23 +305,23 @@ public class Controller {
         if (checkbox.getText().equals("AES")) {
             aes = new AESEncryption();
             aes.generateKey();
-            key = VietnameseTextHelper.bytesToHex(aes.getKey().getEncoded());
+            key = Base64.getEncoder().encodeToString(aes.getKey().getEncoded());
         }
         if (checkbox.getText().equals("DES")) {
             des = new DESEncryption();
             des.generateKey();
-            key = VietnameseTextHelper.bytesToHex(des.getKey().getEncoded());
+            key = Base64.getEncoder().encodeToString(des.getKey().getEncoded());
         }
         if (checkbox.getText().equals("Twofish")) {
             twofish = new Twofish();
             twofish.generateKey();
-            key = VietnameseTextHelper.bytesToHex(twofish.getKey().getEncoded());
+            key = Base64.getEncoder().encodeToString(twofish.getKey().getEncoded());
         }
 
         if (checkbox.getText().equals("Serpent")) {
             serpent= new Serpent();
             serpent.generateKey();
-            key = VietnameseTextHelper.bytesToHex(serpent.getKey().getEncoded());
+            key = Base64.getEncoder().encodeToString(serpent.getKey().getEncoded());
         }
         if (checkbox.getText().equals("MD5")) {
             System.out.println("MD5");
