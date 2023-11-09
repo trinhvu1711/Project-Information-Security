@@ -7,7 +7,8 @@
     <list default="true" id="9c5e09be-f359-4870-b622-a58a8bf4542a" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/controller/Controller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controller/Controller.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/models/AESEncryption.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/AESEncryption.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/models/Serpent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/Serpent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/models/Twofish.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/Twofish.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -76,19 +77,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="DESEncryption" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="models.DESEncryption" />
-      <module name="Project-Information-Security" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="models.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Main" />
       <module name="Project-Information-Security" />
@@ -109,8 +97,21 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="VigenereCipher" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="models.VigenereCipher" />
+    <configuration name="Serpent" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="models.Serpent" />
+      <module name="Project-Information-Security" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="models.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Twofish" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="models.Twofish" />
       <module name="Project-Information-Security" />
       <extension name="coverage">
         <pattern>
@@ -125,10 +126,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Application.Main" />
+        <item itemvalue="Application.Serpent" />
+        <item itemvalue="Application.Twofish" />
         <item itemvalue="Application.AESEncryption" />
         <item itemvalue="Application.RSA" />
-        <item itemvalue="Application.DESEncryption" />
-        <item itemvalue="Application.VigenereCipher" />
       </list>
     </recent_temporary>
   </component>
@@ -156,7 +157,7 @@
       <workItem from="1699366672702" duration="2822000" />
       <workItem from="1699407009698" duration="17145000" />
       <workItem from="1699462606572" duration="14080000" />
-      <workItem from="1699517034367" duration="888000" />
+      <workItem from="1699517034367" duration="3249000" />
     </task>
     <servers />
   </component>

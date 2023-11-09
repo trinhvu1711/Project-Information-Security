@@ -173,10 +173,30 @@ public class Controller {
             algorithmResult = new VigenereCipher(key).calculate(inputText);
         }
         if (checkbox.getText().equals("Twofish")) {
-            algorithmResult = twofish.calculate(inputText);
+            if (checkIsFile()){
+                getOutputPath();
+                try {
+                    twofish.encryptFile(selectedFilePath, outputPath);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }else{
+                algorithmResult = twofish.calculate(inputText);
+            }
+
         }
         if (checkbox.getText().equals("Serpent")) {
-            algorithmResult =serpent.calculate(inputText);
+            if (checkIsFile()){
+                getOutputPath();
+                try {
+                    serpent.encryptFile(selectedFilePath, outputPath);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }else{
+                algorithmResult =serpent.calculate(inputText);
+            }
+
         }
         if (checkbox.getText().equals("DES")) {
             if (checkIsFile()){
@@ -240,12 +260,39 @@ public class Controller {
             algorithmResult = new VigenereCipher(key).decrypt(inputText);
         }
         if (checkbox.getText().equals("Twofish")) {
-            algorithmResult = twofish.decrypt(inputText);
+            twofish.setTwoFishKeyFromString(view.getDecryptKeyField().getText());
+            if (checkIsFileDecrypt()){
+                getOutputDecryptPath();
+                try {
+                    System.out.println(outputDecryptPath);
+                    System.out.println(selectedFileDecryptPath);
+                    twofish.decryptFile(selectedFileDecryptPath, outputDecryptPath);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }else if(checkKeyDecrypt()) {
+                algorithmResult = twofish.decrypt(inputText);
+            }
+
         }
         if (checkbox.getText().equals("Serpent")) {
-            algorithmResult =serpent.decrypt(inputText);
+            serpent.setSerpentKeyFromString(view.getDecryptKeyField().getText());
+            if (checkIsFileDecrypt()){
+                getOutputDecryptPath();
+                try {
+                    System.out.println(outputDecryptPath);
+                    System.out.println(selectedFileDecryptPath);
+                    serpent.decryptFile(selectedFileDecryptPath, outputDecryptPath);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }else if(checkKeyDecrypt()) {
+                algorithmResult =serpent.decrypt(inputText);
+            }
+
         }
         if (checkbox.getText().equals("DES")) {
+            des.setKeyFromText(view.getDecryptKeyField().getText());
             if (checkIsFileDecrypt()){
                 getOutputDecryptPath();
                 try {
@@ -256,11 +303,11 @@ public class Controller {
                     throw new RuntimeException(e);
                 }
             }else if(checkKeyDecrypt()) {
-                des.setKeyFromText(view.getDecryptKeyField().getText());
                 algorithmResult = des.decrypt(inputText);
             }
         }
         if (checkbox.getText().equals("AES")) {
+            aes.setAESKeyFromString(view.getDecryptKeyField().getText());
             if (checkIsFileDecrypt()){
                 getOutputDecryptPath();
                 try {
@@ -271,7 +318,6 @@ public class Controller {
                     throw new RuntimeException(e);
                 }
             }else if(checkKeyDecrypt()) {
-                aes.setAESKeyFromString(view.getDecryptKeyField().getText());
                 algorithmResult = aes.decrypt(inputText);
             }
 
