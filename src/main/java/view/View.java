@@ -1,7 +1,6 @@
 package view;
 
 import com.formdev.flatlaf.FlatLightLaf;
-import com.formdev.flatlaf.fonts.roboto.FlatRobotoFont;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
@@ -22,7 +21,9 @@ public class View {
     private JTextField inputField, decrypInputField;
     private JTextField keyField, decryptKeyField;
     private JTabbedPane tabbedPane;
-    private JComboBox<String> comboBox, comboBoxDecrypt;
+    private JComboBox<String> comboBox, comboBoxDecrypt, inputOptionsComboBox;
+    String[] keyOptions =  new String[]{"String text", "String hex"};
+    String[] inputOptions  = new String[] {"String text", "File"};
     public View(){
         FlatLightLaf.setup();
         frame = new JFrame("Encrypt App");
@@ -41,14 +42,17 @@ public class View {
         tabbedPane.addTab("Digital Signature", tab3);
         tabbedPane.addTab("About", tab4);
         // Input value panel
-        JPanel inputPanel = new JPanel(new MigLayout("fillx", "[grow][pref!][pref!]"));
+        JPanel inputPanel = new JPanel(new MigLayout("fillx", "[pref!][pref!][grow][pref!][pref!]"));
         Border border = BorderFactory.createTitledBorder("Enter text or choose file");
         inputPanel.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
 
         inputField = new JTextField(15);
         buttonFromClipboard = new JButton("From Clipboard");
         buttonFromFile = new JButton("From File");
+        inputOptionsComboBox = new JComboBox<>(inputOptions);
 
+        inputPanel.add(new JLabel("Data format"));
+        inputPanel.add(inputOptionsComboBox, "grow, gapright 10");
         inputPanel.add(inputField, "grow, height 30:30:30");
         inputPanel.add(buttonFromClipboard, "height 30:30:30");
         inputPanel.add(buttonFromFile, "wrap, height 30:30:30");
@@ -59,7 +63,7 @@ public class View {
         keyPanel.setBorder(BorderFactory.createCompoundBorder(border2, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
 
         JLabel label1 = new JLabel("Key Format");
-        comboBox = new JComboBox<>(new String[]{"Option 1", "Option 2", "Option 3"});
+        comboBox = new JComboBox<>(keyOptions);
         JLabel label2 = new JLabel("Key");
         keyField = new JTextField(15);
 
@@ -117,7 +121,7 @@ public class View {
         JPanel resultPanel3 = new JPanel(new MigLayout("fillx", "[pref!][grow]"));
         Border border5 = BorderFactory.createTitledBorder("Hash Function");
         resultPanel3.setBorder(BorderFactory.createCompoundBorder(border5, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
-        String[] HashFunction = new String[] {"MD5", "SHA256"};
+        String[] HashFunction = new String[] {"MD5", "SHA1", "SHA224", "SHA256", "SHA384", "SHA512"};
         JCheckBox[] checkBoxAlgorithms3 = new JCheckBox[HashFunction.length];
         JTextField[] resultFields3 = new JTextField[HashFunction.length];
 
@@ -162,7 +166,7 @@ public class View {
         Border keyDecryptBorder = BorderFactory.createTitledBorder("Enter key");
         keyPanelDecrypt.setBorder(BorderFactory.createCompoundBorder(keyDecryptBorder, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
 
-        comboBoxDecrypt = new JComboBox<>(new String[]{"Option 1", "Option 2", "Option 3"});
+        comboBoxDecrypt = new JComboBox<>(keyOptions);
         decryptKeyField = new JTextField(15);
 
         keyPanelDecrypt.add( new JLabel("Key Format"));

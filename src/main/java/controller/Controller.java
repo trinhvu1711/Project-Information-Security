@@ -18,11 +18,12 @@ import java.util.Map;
 
 public class Controller {
     private final View view;
-    Serpent serpent;
-    RSA rsa;
-    DESEncryption des;
-    AESEncryption aes;
-    Twofish twofish;
+    Serpent serpent = new Serpent();
+    RSA rsa = new RSA();
+    DESEncryption des = new DESEncryption();
+    AESEncryption aes = new AESEncryption();
+    Twofish twofish = new Twofish();
+    HashFunction hashFunction = new HashFunction();
     boolean isFileEncrypt = false;
     boolean isFileDecrypt = false;
     String lastSelectedDirectory = "D:\\VuxBaox\\University Document\\Semester 7\\test_attt";
@@ -162,10 +163,10 @@ public class Controller {
 //    add Algorithm Encrypt event
     private String calculateAlgorithm(JCheckBox checkbox, String inputText, String key) {
         String algorithmResult = "";
-        if(key == null || key.isEmpty()) {
-            showMessageDialog("Key null", "Key error", JOptionPane.ERROR_MESSAGE);
-            return "";
-        }
+//        if(key == null || key.isEmpty()) {
+//            showMessageDialog("Key null", "Key error", JOptionPane.ERROR_MESSAGE);
+//            return "";
+//        }
         if (checkbox.getText().equals("Ceasar")) {
             algorithmResult = new CaesarCipher(Integer.valueOf(key)).calculate(inputText);
         }
@@ -224,15 +225,6 @@ public class Controller {
             }
 
         }
-        if (checkbox.getText().equals("MD5")) {
-            // add encrypt algorithm
-            algorithmResult = new MD5().calculate(inputText);
-        }
-        if (checkbox.getText().equals("SHA256")) {
-            // add encrypt algorithm
-            algorithmResult = new SHA256().calculate(inputText);
-        }
-
         if (checkbox.getText().equals("RSA")){
             if (checkIsFile()){
                 getOutputPath();
@@ -246,6 +238,25 @@ public class Controller {
             }
 
         }
+        if (checkbox.getText().equals("MD5")){
+            algorithmResult = hashFunction.calculate(inputText, HashFunction.ALGORITHM_MD5);
+        }
+        if (checkbox.getText().equals("SHA1")){
+            algorithmResult = hashFunction.calculate(inputText, HashFunction.ALGORITHM_SHA1);
+        }
+        if (checkbox.getText().equals("SHA224")){
+            algorithmResult = hashFunction.calculate(inputText, HashFunction.ALGORITHM_SHA224);
+        }
+        if (checkbox.getText().equals("SHA256")){
+            algorithmResult = hashFunction.calculate(inputText, HashFunction.ALGORITHM_SHA256);
+        }
+        if (checkbox.getText().equals("SHA384")){
+            algorithmResult = hashFunction.calculate(inputText, HashFunction.ALGORITHM_SHA384);
+        }
+        if (checkbox.getText().equals("SHA512")){
+            algorithmResult = hashFunction.calculate(inputText, HashFunction.ALGORITHM_SHA512);
+        }
+
         return algorithmResult;
     }
 
@@ -368,12 +379,6 @@ public class Controller {
             serpent= new Serpent();
             serpent.generateKey();
             key = Base64.getEncoder().encodeToString(serpent.getKey().getEncoded());
-        }
-        if (checkbox.getText().equals("MD5")) {
-            System.out.println("MD5");
-        }
-        if (checkbox.getText().equals("SHA256")) {
-            System.out.println("SHA256");
         }
 
         if (checkbox.getText().equals("RSA")){
