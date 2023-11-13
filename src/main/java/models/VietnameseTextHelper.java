@@ -67,4 +67,70 @@ public class VietnameseTextHelper {
         }
         return "";
     }
+    public static int[][] inverse(int[][] keyMatrix, int mod) {
+        int n = keyMatrix.length;
+        int[][] augmentedMatrix = new int[n][2 * n];
+
+        // Khởi tạo ma trận mở rộng bằng ma trận đơn vị và ma trận khóa
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                augmentedMatrix[i][j] = keyMatrix[i][j];
+                augmentedMatrix[i][j + n] = (i == j) ? 1 : 0; // Ma trận đơn vị
+            }
+        }
+
+        // Biến đổi ma trận thành ma trận echelon
+        for (int i = 0; i < n; i++) {
+            int pivotIdx = -1;
+            for (int j = i; j < n; j++) {
+                if (augmentedMatrix[j][i] != 0) {
+                    pivotIdx = j;
+                    break;
+                }
+            }
+
+            if (pivotIdx == -1) {
+                throw new IllegalArgumentException("Ma trận không khả nghịch");
+            }
+
+            // Hoán đổi các dòng để có phần tử chính nằm ở vị trí (i, i)
+            int[] temp = augmentedMatrix[i];
+            augmentedMatrix[i] = augmentedMatrix[pivotIdx];
+            augmentedMatrix[pivotIdx] = temp;
+
+            // Chuẩn hóa dòng để phần tử chính là 1
+            int pivotInverse = modInverse(augmentedMatrix[i][i], mod);
+            for (int j = 0; j < 2 * n; j++) {
+                augmentedMatrix[i][j] = (augmentedMatrix[i][j] * pivotInverse) % mod;
+            }
+
+            // Loại bỏ các phần tử không chính ở cột i
+            for (int k = 0; k < n; k++) {
+                if (k != i) {
+                    int factor = augmentedMatrix[k][i];
+                    for (int j = 0; j < 2 * n; j++) {
+                        augmentedMatrix[k][j] = (augmentedMatrix[k][j] - factor * augmentedMatrix[i][j] + mod) % mod;
+                    }
+                }
+            }
+        }
+
+        // Lấy ma trận nghịch đảo từ phần sau của ma trận mở rộng
+        int[][] inverseMatrix = new int[n][n];
+        for (int i = 0; i < n; i++) {
+            System.arraycopy(augmentedMatrix[i], n, inverseMatrix[i], 0, n);
+        }
+
+        return inverseMatrix;
+    }
+
+    public static int modInverse(int a, int m) {
+        a = a % m;
+        for (int x = 1; x < m; x++) {
+            if ((a * x) % m == 1) {
+                return x;
+            }
+        }
+        throw new IllegalArgumentException("Không tồn tại nghịch đảo modulo");
+    }
 }
