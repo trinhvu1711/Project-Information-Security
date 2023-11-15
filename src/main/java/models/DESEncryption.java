@@ -1,6 +1,7 @@
 package models;
 
 import javax.crypto.*;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,6 +12,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 
 public class DESEncryption implements EncryptionAlgorithm{
+    private static final byte[] IV = new byte[16];
     private SecretKey key;
     public void generateKey() throws NoSuchAlgorithmException {
         KeyGenerator keygen = KeyGenerator.getInstance("DES");
@@ -53,34 +55,26 @@ public class DESEncryption implements EncryptionAlgorithm{
     }
 
     public void decryptFile(String sourceFile, String destFile) throws Exception{
-        File file = new File(sourceFile);
-        if (file.isFile()){
-            FileInputStream fis = new FileInputStream(file);
-            File dest = new File(destFile);
-            if (!dest.exists()) {
-                // Tạo tệp đích nếu nó chưa tồn tại
-                dest.createNewFile();
-            }
-            FileOutputStream fos = new FileOutputStream(dest);
+        try (FileInputStream fis = new FileInputStream(new File(sourceFile));
+             FileOutputStream fos = new FileOutputStream(new File(destFile))) {
+
             Cipher cipher = Cipher.getInstance("DES");
-            cipher.init(Cipher.DECRYPT_MODE, key);
+            cipher.init(Cipher.DECRYPT_MODE, key, new IvParameterSpec(IV));
 
             byte[] input = new byte[64];
-            int bytesRead = 0;
+            int bytesRead;
 
-            while ((bytesRead = fis.read(input)) != -1){
+            while ((bytesRead = fis.read(input)) != -1) {
                 byte[] output = cipher.update(input, 0, bytesRead);
                 if (output != null) fos.write(output);
             }
+
             byte[] output = cipher.doFinal();
             if (output != null) fos.write(output);
-            fis.close();
-            fos.flush();
-            fos.close();
+
             System.out.println("done decrypt");
-        }
-        else {
-            System.out.println("decrypt error");
+        } catch (Exception e) {
+            System.out.println("Error during decryption: " + e.getMessage());
         }
     }
 
@@ -129,6 +123,15 @@ public class DESEncryption implements EncryptionAlgorithm{
         setKey(key);
     }
 
+    public void setDESKeyFromString(String keyString) {
+        try {
+            byte[] decodedKey = Base64.getDecoder().decode(keyString);
+            key = new SecretKeySpec(decodedKey, 0, decodedKey.length, "DES");
+        } catch (Exception e) {
+            System.out.println("Error setting AES key: " + e.getMessage());
+        }
+    }
+
     public static void main(String[] args) throws Exception {
         String msg = "vudeptrai";
         DESEncryption desEncryption = new DESEncryption();
@@ -143,7 +146,8 @@ public class DESEncryption implements EncryptionAlgorithm{
 //        String descResultPath = "D:\\VuxBaox\\University Document\\Semester 7\\test_attt\\des_output\\des_result.zip";
 //        desEncryption.encryptFile(sourcePath, descPath);
 //        desEncryption.decryptFile(descPath, descResultPath);
-        desEncryption.setKeyFromText("E6315B2354235B83");
+//        desEncryption.setKeyFromText("E6315B2354235B83");
+        desEncryption.setDESKeyFromString("RVLT3B/LExA=");
         System.out.println(desEncryption.key);
         String encrypt = desEncryption.calculate(msg);
         String decrypt = desEncryption.decrypt(encrypt);

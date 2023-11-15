@@ -21,7 +21,7 @@ public class View {
     private JTextField inputField, decrypInputField;
     private JTextField keyField, decryptKeyField;
     private JTabbedPane tabbedPane;
-    private JComboBox<String> comboBox, comboBoxDecrypt, inputOptionsComboBox;
+    private JComboBox<String> comboBoxKeyEncrypt, comboBoxKeyDecrypt, comboBoxInputEncrypt, comboBoxInputDecrypt;
     String[] keyOptions =  new String[]{"String text", "String hex"};
     String[] inputOptions  = new String[] {"String text", "File"};
     public View(){
@@ -49,10 +49,10 @@ public class View {
         inputField = new JTextField(15);
         buttonFromClipboard = new JButton("From Clipboard");
         buttonFromFile = new JButton("From File");
-        inputOptionsComboBox = new JComboBox<>(inputOptions);
+        comboBoxInputEncrypt = new JComboBox<>(inputOptions);
 
         inputPanel.add(new JLabel("Data format"));
-        inputPanel.add(inputOptionsComboBox, "grow, gapright 10");
+        inputPanel.add(comboBoxInputEncrypt, "grow, gapright 10");
         inputPanel.add(inputField, "grow, height 30:30:30");
         inputPanel.add(buttonFromClipboard, "height 30:30:30");
         inputPanel.add(buttonFromFile, "wrap, height 30:30:30");
@@ -63,12 +63,12 @@ public class View {
         keyPanel.setBorder(BorderFactory.createCompoundBorder(border2, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
 
         JLabel label1 = new JLabel("Key Format");
-        comboBox = new JComboBox<>(keyOptions);
+        comboBoxKeyEncrypt = new JComboBox<>(keyOptions);
         JLabel label2 = new JLabel("Key");
         keyField = new JTextField(15);
 
         keyPanel.add(label1);
-        keyPanel.add(comboBox, "grow, gapright 10");
+        keyPanel.add(comboBoxKeyEncrypt, "grow, gapright 10");
         keyPanel.add(label2);
         keyPanel.add(keyField, "grow, height 30:30:30");
 
@@ -77,7 +77,7 @@ public class View {
         JPanel resultPanel1 = new JPanel(new MigLayout("fillx", "[pref!][grow]"));
         Border border3 = BorderFactory.createTitledBorder("Symmetric Encryption");
         resultPanel1.setBorder(BorderFactory.createCompoundBorder(border3, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
-        String[] SymmetricEncryption = new String[] {"Ceasar", "Vigenere", "Twofish", "Serpent", "DES", "AES"};
+        String[] SymmetricEncryption = new String[] {"Hill", "Vigenere", "Twofish", "Serpent", "DES", "AES"};
         JCheckBox[] checkBoxAlgorithms1 = new JCheckBox[SymmetricEncryption.length];
         JTextField[] resultFields1 = new JTextField[SymmetricEncryption.length];
 
@@ -149,14 +149,16 @@ public class View {
 
 
         // Input value panel
-        JPanel inputDecryptPanel = new JPanel(new MigLayout("fillx", "[grow][pref!][pref!]"));
+        JPanel inputDecryptPanel = new JPanel(new MigLayout("fillx", "[pref!][pref!][grow][pref!][pref!]"));
         Border decryptBorder = BorderFactory.createTitledBorder("Enter text or choose file");
         inputDecryptPanel.setBorder(BorderFactory.createCompoundBorder(decryptBorder, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
 
         decrypInputField = new JTextField(15);
         buttonFromClipboardDecrypt = new JButton("From Clipboard");
         buttonFromFileDecrypt = new JButton("From File");
-
+        comboBoxInputDecrypt = new JComboBox<>(inputOptions);
+        inputDecryptPanel.add(new JLabel("Data format"));
+        inputDecryptPanel.add(comboBoxInputDecrypt, "grow, gapright 10");
         inputDecryptPanel.add(decrypInputField, "grow, height 30:30:30");
         inputDecryptPanel.add(buttonFromClipboardDecrypt, "height 30:30:30");
         inputDecryptPanel.add(buttonFromFileDecrypt, "wrap, height 30:30:30");
@@ -166,11 +168,11 @@ public class View {
         Border keyDecryptBorder = BorderFactory.createTitledBorder("Enter key");
         keyPanelDecrypt.setBorder(BorderFactory.createCompoundBorder(keyDecryptBorder, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
 
-        comboBoxDecrypt = new JComboBox<>(keyOptions);
+        comboBoxKeyDecrypt = new JComboBox<>(keyOptions);
         decryptKeyField = new JTextField(15);
 
         keyPanelDecrypt.add( new JLabel("Key Format"));
-        keyPanelDecrypt.add(comboBoxDecrypt, "grow, gapright 10");
+        keyPanelDecrypt.add(comboBoxKeyDecrypt, "grow, gapright 10");
         keyPanelDecrypt.add(new JLabel("Key"));
         keyPanelDecrypt.add(decryptKeyField, "grow, height 30:30:30");
 
@@ -182,20 +184,19 @@ public class View {
         resultPanel4.setBorder(BorderFactory.createCompoundBorder(border6, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
 
 //       SymmetricDecryption
-        String[] SymmetricDecryption = new String[] {"Ceasar", "Vigenere", "Twofish", "Serpent", "DES", "AES"};
-        JCheckBox[] checkBoxAlgorithms4 = new JCheckBox[SymmetricDecryption.length];
-        JTextField[] resultFields4 = new JTextField[SymmetricDecryption.length];
+        JCheckBox[] checkBoxAlgorithms4 = new JCheckBox[SymmetricEncryption.length];
+        JTextField[] resultFields4 = new JTextField[SymmetricEncryption.length];
 
-        for (int i = 0; i < SymmetricDecryption.length; i++) {
-            checkBoxAlgorithms4[i] = new JCheckBox(SymmetricDecryption[i]);
+        for (int i = 0; i < SymmetricEncryption.length; i++) {
+            checkBoxAlgorithms4[i] = new JCheckBox(SymmetricEncryption[i]);
             resultFields4[i] = new JTextField(90);
             checkBoxResultDecryptMap.put(checkBoxAlgorithms4[i],resultFields4[i]);
         }
 
-        for (int i = 0; i < SymmetricDecryption.length; i++) {
+        for (int i = 0; i < SymmetricEncryption.length; i++) {
             resultPanel4.add(checkBoxAlgorithms4[i], "gapright 10");
             resultPanel4.add(resultFields4[i], "grow");
-            if (i < SymmetricDecryption.length -1 ) {
+            if (i < SymmetricEncryption.length -1 ) {
                 resultPanel4.add(resultFields4[i], "grow, wrap");
             }
         }
@@ -283,8 +284,8 @@ public class View {
         return keyField;
     }
 
-    public JComboBox<String> getComboBox() {
-        return comboBox;
+    public JComboBox<String> getComboBoxKeyEncrypt() {
+        return comboBoxKeyEncrypt;
     }
 
     public JTextField getInputField() {
@@ -327,12 +328,20 @@ public class View {
         return decryptKeyField;
     }
 
-    public JComboBox<String> getComboBoxDecrypt() {
-        return comboBoxDecrypt;
+    public JComboBox<String> getComboBoxKeyDecrypt() {
+        return comboBoxKeyDecrypt;
     }
 
     public JTabbedPane getTabbedPane() {
         return tabbedPane;
+    }
+
+    public JComboBox<String> getComboBoxInputEncrypt() {
+        return comboBoxInputEncrypt;
+    }
+
+    public JComboBox<String> getComboBoxInputDecrypt() {
+        return comboBoxInputDecrypt;
     }
 
     public void showPublicPrivateKey(PublicKey publicKey, PrivateKey privateKey){

@@ -5,6 +5,24 @@ public class Hill implements EncryptionAlgorithm {
         this.keyMatrix = keyMatrix;
     }
 
+    public Hill() {
+    }
+
+    public static int[][] getKeyMatrix(String key)
+    {
+        int keyMatrix[][] = new int[3][3];
+        int k = 0;
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                keyMatrix[i][j] = VietnameseTextHelper.findIndexAlphabet(key.charAt(k));
+                k++;
+            }
+        }
+        return keyMatrix;
+    }
+
     //    int inverseKeyMatrix[][];
     @Override
     public String calculate(String inputData) {
@@ -85,7 +103,6 @@ public class Hill implements EncryptionAlgorithm {
                 decryptedData.append(decryptedChar);
             }
         }
-
         return decryptedData.toString();
     }
 
@@ -123,5 +140,7 @@ public class Hill implements EncryptionAlgorithm {
 //         Giải mã
         String decryptedText = hillCipher.decrypt(encryptedText);
         System.out.println("Decrypted Text: " + decryptedText);
+
+
     }
 }

@@ -1,7 +1,6 @@
 package controller;
 
 import models.*;
-import net.miginfocom.swing.MigLayout;
 import view.View;
 
 import javax.swing.*;
@@ -9,8 +8,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -26,6 +23,8 @@ public class Controller {
     HashFunction hashFunction = new HashFunction();
     boolean isFileEncrypt = false;
     boolean isFileDecrypt = false;
+    boolean isHexKeyEncrypt, isHexKeyDecrypt = false;
+
     String lastSelectedDirectory = "D:\\VuxBaox\\University Document\\Semester 7\\test_attt";
     String selectedFilePath = "";
     String outputPath = "";
@@ -62,7 +61,6 @@ public class Controller {
                     selectedFilePath = fileChooser.getSelectedFile().getAbsolutePath();
                     view.getInputField().setText(selectedFilePath);
                     lastSelectedDirectory = fileChooser.getSelectedFile().getParent();
-                    isFileEncrypt = true;
                     fileName = fileChooser.getSelectedFile().getName();
                 }
             }
@@ -88,13 +86,54 @@ public class Controller {
         });
 
         // Thêm sự kiện cho comboBox
-        view.getComboBox().addActionListener(new ActionListener() {
+        view.getComboBoxInputEncrypt().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Xử lý sự kiện cho comboBox ở đây
-                System.out.println("getComboBox");
+                String selectedValue = (String) view.getComboBoxInputEncrypt().getSelectedItem();
+                if (selectedValue.equals("File")){
+                    isFileEncrypt = true;
+                }
+                else {
+                    isFileEncrypt = false;
+                }
             }
         });
+        view.getComboBoxKeyEncrypt().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String selectedValue = (String) view.getComboBoxKeyEncrypt().getSelectedItem();
+                if (selectedValue.equals("String hex")){
+                    isHexKeyEncrypt = true;
+                }
+                else {
+                    isHexKeyEncrypt = false;
+                }
+            }
+        });
+        view.getComboBoxKeyDecrypt().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String selectedValue = (String) view.getComboBoxKeyDecrypt().getSelectedItem();
+                if (selectedValue.equals("String hex")){
+                    isHexKeyDecrypt = true;
+                }
+                else {
+                    isHexKeyDecrypt = false;
+                }
+            }
+        });
+        view.getComboBoxInputDecrypt().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String selectedValue = (String) view.getComboBoxInputDecrypt().getSelectedItem();
+                if (selectedValue.equals("File")) {
+                    isFileDecrypt = true;
+                } else {
+                    isFileDecrypt = false;
+                }
+            }
+        });
+
 
 //        add event listener for calculate button
         view.getButtonCalculate().addActionListener(new ActionListener() {
@@ -173,8 +212,11 @@ public class Controller {
         if (checkbox.getText().equals("Vigenere")) {
             algorithmResult = new VigenereCipher(key).calculate(inputText);
         }
+        if (checkbox.getText().equals("Hill")) {
+            algorithmResult = new Hill(Hill.getKeyMatrix(key)).calculate(inputText);
+        }
         if (checkbox.getText().equals("Twofish")) {
-            if (checkIsFile()){
+            if (isFileEncrypt){
                 getOutputPath();
                 try {
                     twofish.encryptFile(selectedFilePath, outputPath);
@@ -184,10 +226,9 @@ public class Controller {
             }else{
                 algorithmResult = twofish.calculate(inputText);
             }
-
         }
         if (checkbox.getText().equals("Serpent")) {
-            if (checkIsFile()){
+            if (isFileEncrypt){
                 getOutputPath();
                 try {
                     serpent.encryptFile(selectedFilePath, outputPath);
@@ -200,7 +241,7 @@ public class Controller {
 
         }
         if (checkbox.getText().equals("DES")) {
-            if (checkIsFile()){
+            if (isFileEncrypt){
                 getOutputPath();
                 try {
                     des.encryptFile(selectedFilePath, outputPath);
@@ -213,7 +254,7 @@ public class Controller {
 
         }
         if (checkbox.getText().equals("AES")) {
-            if (checkIsFile()){
+            if (isFileEncrypt){
                 getOutputPath();
                 try {
                     aes.encryptFile(selectedFilePath, outputPath);
@@ -226,7 +267,7 @@ public class Controller {
 
         }
         if (checkbox.getText().equals("RSA")){
-            if (checkIsFile()){
+            if (isFileEncrypt){
                 getOutputPath();
                 try {
                     rsa.fileEncrypt(selectedFilePath, outputPath);
@@ -270,9 +311,12 @@ public class Controller {
         if (checkbox.getText().equals("Vigenere")) {
             algorithmResult = new VigenereCipher(key).decrypt(inputText);
         }
+        if (checkbox.getText().equals("Hill")) {
+            algorithmResult = new Hill(Hill.getKeyMatrix(key)).decrypt(inputText).replaceAll("/", "");
+        }
         if (checkbox.getText().equals("Twofish")) {
             twofish.setTwoFishKeyFromString(view.getDecryptKeyField().getText());
-            if (checkIsFileDecrypt()){
+            if (isFileDecrypt){
                 getOutputDecryptPath();
                 try {
                     System.out.println(outputDecryptPath);
@@ -288,7 +332,7 @@ public class Controller {
         }
         if (checkbox.getText().equals("Serpent")) {
             serpent.setSerpentKeyFromString(view.getDecryptKeyField().getText());
-            if (checkIsFileDecrypt()){
+            if (isFileDecrypt){
                 getOutputDecryptPath();
                 try {
                     System.out.println(outputDecryptPath);
@@ -303,8 +347,8 @@ public class Controller {
 
         }
         if (checkbox.getText().equals("DES")) {
-            des.setKeyFromText(view.getDecryptKeyField().getText());
-            if (checkIsFileDecrypt()){
+            des.setDESKeyFromString(view.getDecryptKeyField().getText());
+            if (isFileDecrypt){
                 getOutputDecryptPath();
                 try {
                     System.out.println(outputDecryptPath);
@@ -319,7 +363,7 @@ public class Controller {
         }
         if (checkbox.getText().equals("AES")) {
             aes.setAESKeyFromString(view.getDecryptKeyField().getText());
-            if (checkIsFileDecrypt()){
+            if (isFileDecrypt){
                 getOutputDecryptPath();
                 try {
                     System.out.println(outputDecryptPath);
@@ -335,7 +379,7 @@ public class Controller {
         }
 
         if (checkbox.getText().equals("RSA")){
-            if (checkIsFileDecrypt()) {
+            if (isFileDecrypt) {
                 getOutputDecryptPath();
                 try {
                     rsa.fileDecrypt(selectedFileDecryptPath, outputDecryptPath);
@@ -418,14 +462,6 @@ public class Controller {
             }
         }
         return selectedCheckboxes;
-    }
-
-    public boolean checkIsFile() {
-        return isFileEncrypt && new File(selectedFilePath).isFile();
-    }
-
-    public boolean checkIsFileDecrypt() {
-        return isFileDecrypt;
     }
 
     public boolean checkKey(){
