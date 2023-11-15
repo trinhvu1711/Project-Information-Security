@@ -1,31 +1,47 @@
 package models;
-
 public class Hill implements EncryptionAlgorithm {
     int keyMatrix[][];
-//    int inverseKeyMatrix[][];
+    public Hill(int[][] keyMatrix) {
+        this.keyMatrix = keyMatrix;
+    }
+
+    //    int inverseKeyMatrix[][];
     @Override
     public String calculate(String inputData) {
         StringBuilder encryptedData = new StringBuilder();
         int alphabetSize = VietnameseTextHelper.ALPHABET_SIZE;
+        int matrixSize = keyMatrix.length;
 
-        for (int i = 0; i < inputData.length(); i += 3) {
-            String block = inputData.substring(i, Math.min(i + 3, inputData.length()));
-            int[] blockVector = new int[3];
+        for (int i = 0; i < inputData.length(); i += matrixSize) {
+            String block = inputData.substring(i, Math.min(i + matrixSize, inputData.length()));
+            int[] blockVector = new int[matrixSize];
+            while (block.length() < matrixSize) {
+                block += '/';
+            }
 
             for (int j = 0; j < block.length(); j++) {
-                char ch = block.charAt(j);
-                int index = VietnameseTextHelper.ALPHABET_VIETNAMESE.indexOf(ch);
+                char charItem = block.charAt(j);
+                if (Character.isLetter(charItem)){
+                    charItem = Character.toLowerCase(charItem);
+                }
+                int index = VietnameseTextHelper.findIndexAlphabet(charItem);
                 blockVector[j] = index;
             }
 
-            for (int j = 0; j < 3; j++) {
+            for (int j = 0; j < matrixSize; j++) {
                 int sum = 0;
-                for (int k = 0; k < 3; k++) {
+                for (int k = 0; k < matrixSize; k++) {
                     sum += keyMatrix[j][k] * blockVector[k];
                 }
 
                 int index = (sum % alphabetSize + alphabetSize) % alphabetSize;
-                encryptedData.append(VietnameseTextHelper.ALPHABET_VIETNAMESE.charAt(index));
+                char encryptedChar = VietnameseTextHelper.getCharacterAtIndex(index);
+
+                if (Character.isLetter(block.charAt(j)) && Character.isUpperCase(block.charAt(j))) {
+                    encryptedChar = Character.toUpperCase(encryptedChar);
+                }
+
+                encryptedData.append(encryptedChar);
             }
         }
 
@@ -36,27 +52,37 @@ public class Hill implements EncryptionAlgorithm {
     public String decrypt(String encryptedData) {
         StringBuilder decryptedData = new StringBuilder();
         int alphabetSize = VietnameseTextHelper.ALPHABET_SIZE;
+        int matrixSize = keyMatrix.length;
 
-        for (int i = 0; i < encryptedData.length(); i += 3) {
-            String block = encryptedData.substring(i, Math.min(i + 3, encryptedData.length()));
-            int[] blockVector = new int[3];
+        for (int i = 0; i < encryptedData.length(); i += matrixSize) {
+            String block = encryptedData.substring(i, Math.min(i + matrixSize, encryptedData.length()));
+            int[] blockVector = new int[matrixSize];
 
             for (int j = 0; j < block.length(); j++) {
-                char ch = block.charAt(j);
-                int index = VietnameseTextHelper.ALPHABET_VIETNAMESE.indexOf(ch);
+                char charItem = block.charAt(j);
+                if (Character.isLetter(charItem)){
+                    charItem = Character.toLowerCase(charItem);
+                }
+                int index = VietnameseTextHelper.findIndexAlphabet(charItem);
                 blockVector[j] = index;
+
             }
-
-            int[][] inverseKeyMatrix = VietnameseTextHelper.inverse(keyMatrix, alphabetSize);
-
-            for (int j = 0; j < 3; j++) {
+//            int[][] inverseKeyMatrix = VietnameseTextHelper.inverse(keyMatrix);
+            int[][] inverseKeyMatrix = VietnameseTextHelper.getReverseModulo(keyMatrix);
+            for (int j = 0; j < matrixSize; j++) {
                 int sum = 0;
-                for (int k = 0; k < 3; k++) {
+                for (int k = 0; k < matrixSize; k++) {
                     sum += inverseKeyMatrix[j][k] * blockVector[k];
                 }
 
-                int index = (sum % alphabetSize + alphabetSize) % alphabetSize;
-                decryptedData.append(VietnameseTextHelper.ALPHABET_VIETNAMESE.charAt(index));
+                int index = sum % alphabetSize ;
+                char decryptedChar = VietnameseTextHelper.getCharacterAtIndex(index);
+
+                if (Character.isLetter(block.charAt(j)) && Character.isUpperCase(block.charAt(j))) {
+                    decryptedChar = Character.toUpperCase(decryptedChar);
+                }
+
+                decryptedData.append(decryptedChar);
             }
         }
 
@@ -72,36 +98,30 @@ public class Hill implements EncryptionAlgorithm {
     }
 
     public static void main(String[] args) {
-        // Ma trận khóa và ma trận khóa nghịch đảo (tạm thời)
+        // Ma trận khóa (3x3) cho ví dụ
         int[][] keyMatrix = {
                 {6, 24, 1},
                 {13, 16, 10},
-                {20, 17, 15}
+                {20, 17, 15},
         };
-        int[][] inverseKeyMatrix = {
-                {8, 5, 10},
-                {21, 8, 21},
-                {21, 12, 8}
+        int [][] keyMatrix2 = {
+                {6, 24},
+                {13, 16},
         };
 
-        // Dữ liệu để kiểm tra
-        String originalData = "HELLO";
-        Hill hill = new Hill();
-        hill.setKeyMatrix(keyMatrix);
-//        hill.setInverseKeyMatrix(inverseKeyMatrix);
+        // Chuỗi cần mã hóa
+        String plaintext = "nghiêng, UBND P.An Khánh (TP.Thủ Đức, TP.HCM) đã xuống kiểm tra 123";
+        String text = "Cụ thể,@#!$> đối với nhóm 47 dự án (gồm 8.159 căn) chưa cấp sổ hồng không có vướng mắc về mặt pháp lý, chỉ chờ xác nhận hoàn thành nghĩa vụ tài chính. Nguyên nhân dẫn đến việc phát sinh chậm trễ trong quá trình giải quyết thủ tục về thuế để có cơ sở thực hiện cấp sổ cho người mua nhà là do điều kiện cơ sở vật chất khi thực hiện liên thông thuế điện tử trong giải quyết thủ tục đất đai giữa cơ quan đăng ký đất đai và cơ quan thuế.";
+
+        // Tạo đối tượng mã hóa
+        Hill hillCipher = new Hill(keyMatrix);
+
         // Mã hóa
-        String encryptedData = hill.calculate(originalData);
-        System.out.println("Dữ liệu đã được mã hóa: " + encryptedData);
+        String encryptedText = hillCipher.calculate(text);
+        System.out.println("Encrypted Text: " + encryptedText);
 
-        // Giải mã
-        String decryptedData = hill.decrypt(encryptedData);
-        System.out.println("Dữ liệu đã được giải mã: " + decryptedData);
-
-        // Kiểm tra xem dữ liệu giải mã có khớp với dữ liệu gốc không
-        if (originalData.equals(decryptedData)) {
-            System.out.println("Kiểm tra thành công! Dữ liệu giải mã trùng khớp với dữ liệu gốc.");
-        } else {
-            System.out.println("Kiểm tra không thành công! Dữ liệu giải mã không khớp với dữ liệu gốc.");
-        }
+//         Giải mã
+        String decryptedText = hillCipher.decrypt(encryptedText);
+        System.out.println("Decrypted Text: " + decryptedText);
     }
 }

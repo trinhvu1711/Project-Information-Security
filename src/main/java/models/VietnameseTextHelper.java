@@ -2,9 +2,11 @@ package models;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import java.math.BigInteger;
 
 public class VietnameseTextHelper {
-    public static final String ALPHABET_VIETNAMESE = "aáàạãảăắằặẵẳâấầậẫẩbcdđeéèẹẽẻêếềệễểghiíìịĩỉklmnoóòọõỏôốồộỗổơớờợỡởpqrstuúùụũủưứừựữửvxyýỳỵỹỷ";
+    public static final String ALPHABET_VIETNAMESE = "aàáãảạăằắẵẳặâầấẫẩậbcdđeéèẹẽẻêếềệễểghiìíĩỉịklmnoòóõỏọôồốỗổộơờớỡởợpqrstuùúũủụưừứữửựvxyỳýỷỹỵ1234567890 ~!@#$%^&*()-=_+[]{}|;:'\\\",.<>?/";
+
     public static final int ALPHABET_SIZE = ALPHABET_VIETNAMESE.length();
 
     public static int findIndexAlphabet(char text) {
@@ -18,6 +20,13 @@ public class VietnameseTextHelper {
             }
         }
         return -1;
+    }
+    public static char getCharacterAtIndex(int index) {
+        if (index >= 0 && index < ALPHABET_SIZE) {
+            return ALPHABET_VIETNAMESE.charAt(index);
+        } else {
+            return '?';
+        }
     }
     public static String getCharacterAtIndexAndUpperCase(int index) {
         if (index >= 0 && index < ALPHABET_SIZE) {
@@ -67,70 +76,41 @@ public class VietnameseTextHelper {
         }
         return "";
     }
-    public static int[][] inverse(int[][] keyMatrix, int mod) {
-        int n = keyMatrix.length;
-        int[][] augmentedMatrix = new int[n][2 * n];
-
-        // Khởi tạo ma trận mở rộng bằng ma trận đơn vị và ma trận khóa
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                augmentedMatrix[i][j] = keyMatrix[i][j];
-                augmentedMatrix[i][j + n] = (i == j) ? 1 : 0; // Ma trận đơn vị
+    public static void printMatrix(int[][] matrix) {
+        // In ra ma trận
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                System.out.print(matrix[i][j] + " ");
+            }
+            System.out.println();
+        }
+    }
+    public static BigInteger[][] addItem(int [][] arr){
+        BigInteger[][] key = new BigInteger[arr.length][arr.length];
+        for (int i =0; i < arr.length; i++) {
+            for (int j = 0; j< arr.length; j++){
+                key[i][j] = new BigInteger(String.valueOf(arr[i][j]));
             }
         }
-
-        // Biến đổi ma trận thành ma trận echelon
-        for (int i = 0; i < n; i++) {
-            int pivotIdx = -1;
-            for (int j = i; j < n; j++) {
-                if (augmentedMatrix[j][i] != 0) {
-                    pivotIdx = j;
-                    break;
-                }
-            }
-
-            if (pivotIdx == -1) {
-                throw new IllegalArgumentException("Ma trận không khả nghịch");
-            }
-
-            // Hoán đổi các dòng để có phần tử chính nằm ở vị trí (i, i)
-            int[] temp = augmentedMatrix[i];
-            augmentedMatrix[i] = augmentedMatrix[pivotIdx];
-            augmentedMatrix[pivotIdx] = temp;
-
-            // Chuẩn hóa dòng để phần tử chính là 1
-            int pivotInverse = modInverse(augmentedMatrix[i][i], mod);
-            for (int j = 0; j < 2 * n; j++) {
-                augmentedMatrix[i][j] = (augmentedMatrix[i][j] * pivotInverse) % mod;
-            }
-
-            // Loại bỏ các phần tử không chính ở cột i
-            for (int k = 0; k < n; k++) {
-                if (k != i) {
-                    int factor = augmentedMatrix[k][i];
-                    for (int j = 0; j < 2 * n; j++) {
-                        augmentedMatrix[k][j] = (augmentedMatrix[k][j] - factor * augmentedMatrix[i][j] + mod) % mod;
-                    }
-                }
-            }
-        }
-
-        // Lấy ma trận nghịch đảo từ phần sau của ma trận mở rộng
-        int[][] inverseMatrix = new int[n][n];
-        for (int i = 0; i < n; i++) {
-            System.arraycopy(augmentedMatrix[i], n, inverseMatrix[i], 0, n);
-        }
-
-        return inverseMatrix;
+        return key;
     }
 
-    public static int modInverse(int a, int m) {
-        a = a % m;
-        for (int x = 1; x < m; x++) {
-            if ((a * x) % m == 1) {
-                return x;
+    public static int[][] getReverseModulo(int[][] data){
+
+        BigInteger[][] key = addItem(data);
+        ModMatrix modMatrix = new ModMatrix(key);
+        ModMatrix inverse = modMatrix.inverse(modMatrix);
+        int[][] result = new int[inverse.getNrows()][inverse.getNrows()];
+        for (int i = 0; i < inverse.getNrows(); i++) {
+            for (int j = 0; j < inverse.getNcols(); j++) {
+                result[i][j] = inverse.getData()[i][j].intValue();
             }
         }
-        throw new IllegalArgumentException("Không tồn tại nghịch đảo modulo");
+        return result;
+    }
+    public static void main(String[] args) {
+        int[][] data = {{4, 7}, {2, 6}};
+        int[][] reverseModulo = getReverseModulo(data);
+        printMatrix(reverseModulo);
     }
 }
