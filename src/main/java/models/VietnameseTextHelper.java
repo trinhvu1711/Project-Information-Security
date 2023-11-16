@@ -15,7 +15,6 @@ import java.util.Set;
 
 public class VietnameseTextHelper {
     public static final String ALPHABET_VIETNAMESE = "aàáãảạăằắẵẳặâầấẫẩậbcdđeéèẹẽẻêếềệễểghiìíĩỉịklmnoòóõỏọôồốỗổộơờớỡởợpqrstuùúũủụưừứữửựvxyỳýỷỹỵ1234567890 ~!@#$%^&*()-=_+[]{}|;:'\\\",.<>?/";
-
     public static final int ALPHABET_SIZE = ALPHABET_VIETNAMESE.length();
 
     public static int findIndexAlphabet(char text) {

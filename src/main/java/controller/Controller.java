@@ -55,6 +55,20 @@ public class Controller {
                 }
             });
         }
+        for (Map.Entry<JCheckBox, JTextField> entry : view.getCheckBoxResultDecryptMap().entrySet()) {
+            JCheckBox checkbox = entry.getKey();
+            checkbox.addItemListener(new ItemListener() {
+                @Override
+                public void itemStateChanged(ItemEvent e) {
+                    if (checkbox.isSelected()) {
+                        setKeySize(checkbox);
+                        DefaultComboBoxModel<Integer> key = new DefaultComboBoxModel<>(keySizeOptions);
+                        view.getComboBoxKeySize().setEnabled(true);
+                        view.getComboBoxKeySize().setModel(key);
+                    }
+                }
+            });
+        }
 
         // Thêm sự kiện cho buttonFromClipboard
         view.getButtonFromClipboard().addActionListener(new ActionListener() {
@@ -80,7 +94,9 @@ public class Controller {
                     view.getInputField().setText(selectedFilePath);
                     lastSelectedDirectory = fileChooser.getSelectedFile().getParent();
                     fileName = fileChooser.getSelectedFile().getName();
+                    System.out.println(fileName);
                 }
+
             }
         });
 
@@ -99,6 +115,7 @@ public class Controller {
                     lastSelectedDirectory = fileChooser.getSelectedFile().getParent();
                     fileName = fileChooser.getSelectedFile().getName();
                 }
+
             }
         });
 
@@ -180,6 +197,12 @@ public class Controller {
                     String inputText = view.getInputField().getText();
                     String key = view.getKeyField().getText();
                     List<JCheckBox> listCheckBox = getSelectedCheckboxes();
+                    if (inputText.isEmpty() || inputText.isBlank()){
+                        showMessageDialog("Please enter input", "Dialog", JOptionPane.PLAIN_MESSAGE);
+                    }
+                    else if (key.isEmpty() || key.isBlank()){
+                        showMessageDialog("Please enter key", "Dialog", JOptionPane.PLAIN_MESSAGE);
+                    }
                     if (listCheckBox != null) {
                         for (JCheckBox jCheckBox:listCheckBox) {
                             String result = calculateAlgorithm(jCheckBox, inputText, key);
@@ -232,23 +255,31 @@ public class Controller {
         view.getButtonGenerateKey().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                List<JCheckBox> listCheckBox = getSelectedCheckboxes();
-                System.out.println(listCheckBox.get(0).getText());
-                String key = null;
-                if (listCheckBox != null){
-                    try {
-                        key = generateKey(listCheckBox.get(0));
-                    } catch (NoSuchAlgorithmException ex) {
-                        throw new RuntimeException(ex);
-                    }
-                    JTextField resultField = view.getKeyField();
-                    if (key != null) {
-                        resultField.setText(key);
+                int selectedTabIndex = view.getTabbedPane().getSelectedIndex();
+                if (selectedTabIndex == 0){
+                    List<JCheckBox> listCheckBox = getSelectedCheckboxes();
+                    System.out.println(listCheckBox.get(0).getText());
+                    String key = null;
+                    if (listCheckBox != null){
+                        try {
+                            key = generateKey(listCheckBox.get(0));
+                        } catch (NoSuchAlgorithmException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                        JTextField resultField = view.getKeyField();
+                        if (key != null) {
+                            resultField.setText(key);
+                        }
                     }
                 }
             }
         });
-
+        view.getButtonClose().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
         //        add even listener for generate key DS
         view.getButtonCompareDS().addActionListener(new ActionListener() {
             @Override
@@ -297,12 +328,15 @@ public class Controller {
         if (checkbox.getText().equals("Hill")) {
             algorithmResult = new Hill(Hill.getKeyMatrix(key)).calculate(inputText);
         }
+
         if (checkbox.getText().equals("Twofish")) {
             if (isFileEncrypt){
                 getOutputPath();
                 try {
                     twofish.encryptFile(selectedFilePath, outputPath);
+                    showMessageDialog("Encrypt done", "Encrypt status", JOptionPane.PLAIN_MESSAGE);
                 } catch (Exception e) {
+                    showMessageDialog(e.getMessage(), "Encrypt status", JOptionPane.ERROR_MESSAGE);
                     throw new RuntimeException(e);
                 }
             }else{
@@ -314,7 +348,9 @@ public class Controller {
                 getOutputPath();
                 try {
                     serpent.encryptFile(selectedFilePath, outputPath);
+                    showMessageDialog("Encrypt done", "Encrypt status", JOptionPane.PLAIN_MESSAGE);
                 } catch (Exception e) {
+                    showMessageDialog(e.getMessage(), "Encrypt status", JOptionPane.ERROR_MESSAGE);
                     throw new RuntimeException(e);
                 }
             }else{
@@ -327,7 +363,9 @@ public class Controller {
                 getOutputPath();
                 try {
                     des.encryptFile(selectedFilePath, outputPath);
+                    showMessageDialog("Encrypt done", "Encrypt status", JOptionPane.PLAIN_MESSAGE);
                 } catch (Exception e) {
+                    showMessageDialog(e.getMessage(), "Encrypt status", JOptionPane.ERROR_MESSAGE);
                     throw new RuntimeException(e);
                 }
             }else{
@@ -340,7 +378,9 @@ public class Controller {
                 getOutputPath();
                 try {
                     aes.encryptFile(selectedFilePath, outputPath);
+                    showMessageDialog("Encrypt done", "Encrypt status", JOptionPane.PLAIN_MESSAGE);
                 } catch (Exception e) {
+                    showMessageDialog(e.getMessage(), "Encrypt status", JOptionPane.ERROR_MESSAGE);
                     throw new RuntimeException(e);
                 }
             }else{
@@ -353,8 +393,11 @@ public class Controller {
                 getOutputPath();
                 try {
                     rsa.fileEncrypt(selectedFilePath, outputPath);
+                    showMessageDialog("Encrypt done", "Encrypt status", JOptionPane.PLAIN_MESSAGE);
                 } catch (Exception e) {
+                    showMessageDialog(e.getMessage(), "Encrypt status", JOptionPane.ERROR_MESSAGE);
                     throw new RuntimeException(e);
+
                 }
             }else{
                 algorithmResult = rsa.calculate(inputText);
@@ -396,15 +439,25 @@ public class Controller {
         if (checkbox.getText().equals("Hill")) {
             algorithmResult = new Hill(Hill.getKeyMatrix(key)).decrypt(inputText).replaceAll("/", "");
         }
+
         if (checkbox.getText().equals("Twofish")) {
             twofish.setTwoFishKeyFromString(view.getDecryptKeyField().getText());
             if (isFileDecrypt){
                 getOutputDecryptPath();
                 try {
-                    System.out.println(outputDecryptPath);
-                    System.out.println(selectedFileDecryptPath);
+                     if (selectedFileDecryptPath.isEmpty() || selectedFileDecryptPath.isBlank()){
+                        showMessageDialog("Please choose another file", "File Choose Dialog", JOptionPane.PLAIN_MESSAGE);
+                        return "";
+                     }
+                    else if (outputDecryptPath.isEmpty() || outputDecryptPath.isBlank()){
+                        showMessageDialog("Please choose another file", "File Choose Dialog", JOptionPane.PLAIN_MESSAGE);
+                        return "";
+                    }
+
                     twofish.decryptFile(selectedFileDecryptPath, outputDecryptPath);
+                    showMessageDialog("Decrypt done", "Decrypt status", JOptionPane.PLAIN_MESSAGE);
                 } catch (Exception e) {
+                    showMessageDialog(e.getMessage(), "Decrypt status", JOptionPane.ERROR_MESSAGE);
                     throw new RuntimeException(e);
                 }
             }else if(checkKeyDecrypt()) {
@@ -417,10 +470,18 @@ public class Controller {
             if (isFileDecrypt){
                 getOutputDecryptPath();
                 try {
-                    System.out.println(outputDecryptPath);
-                    System.out.println(selectedFileDecryptPath);
+                     if (selectedFileDecryptPath.isEmpty() || selectedFileDecryptPath.isBlank()){
+                        showMessageDialog("Please choose another file", "File Choose Dialog", JOptionPane.PLAIN_MESSAGE);
+                        return "";
+                     }
+                    else if (outputDecryptPath.isEmpty() || outputDecryptPath.isBlank()){
+                        showMessageDialog("Please choose another file", "File Choose Dialog", JOptionPane.PLAIN_MESSAGE);
+                        return "";
+                    }
                     serpent.decryptFile(selectedFileDecryptPath, outputDecryptPath);
+                    showMessageDialog("Decrypt done", "Decrypt status", JOptionPane.PLAIN_MESSAGE);
                 } catch (Exception e) {
+                    showMessageDialog(e.getMessage(), "Decrypt status", JOptionPane.ERROR_MESSAGE);
                     throw new RuntimeException(e);
                 }
             }else if(checkKeyDecrypt()) {
@@ -433,10 +494,18 @@ public class Controller {
             if (isFileDecrypt){
                 getOutputDecryptPath();
                 try {
-                    System.out.println(outputDecryptPath);
-                    System.out.println(selectedFileDecryptPath);
+                     if (selectedFileDecryptPath.isEmpty() || selectedFileDecryptPath.isBlank()){
+                        showMessageDialog("Please choose another file", "File Choose Dialog", JOptionPane.PLAIN_MESSAGE);
+                        return "";
+                     }
+                    else if (outputDecryptPath.isEmpty() || outputDecryptPath.isBlank()){
+                        showMessageDialog("Please choose another file", "File Choose Dialog", JOptionPane.PLAIN_MESSAGE);
+                        return "";
+                    }
                     des.decryptFile(selectedFileDecryptPath, outputDecryptPath);
+                    showMessageDialog("Decrypt done", "Decrypt status", JOptionPane.PLAIN_MESSAGE);
                 } catch (Exception e) {
+                    showMessageDialog(e.getMessage(), "Decrypt status", JOptionPane.ERROR_MESSAGE);
                     throw new RuntimeException(e);
                 }
             }else if(checkKeyDecrypt()) {
@@ -448,10 +517,18 @@ public class Controller {
             if (isFileDecrypt){
                 getOutputDecryptPath();
                 try {
-                    System.out.println(outputDecryptPath);
-                    System.out.println(selectedFileDecryptPath);
+                     if (selectedFileDecryptPath.isEmpty() || selectedFileDecryptPath.isBlank()){
+                        showMessageDialog("Please choose another file", "File Choose Dialog", JOptionPane.PLAIN_MESSAGE);
+                        return "";
+                     }
+                    else if (outputDecryptPath.isEmpty() || outputDecryptPath.isBlank()){
+                        showMessageDialog("Please choose another file", "File Choose Dialog", JOptionPane.PLAIN_MESSAGE);
+                        return "";
+                    }
                     aes.decryptFile(selectedFileDecryptPath, outputDecryptPath);
+                    showMessageDialog("Decrypt done", "Decrypt status", JOptionPane.PLAIN_MESSAGE);
                 } catch (Exception e) {
+                    showMessageDialog(e.getMessage(), "Decrypt status", JOptionPane.ERROR_MESSAGE);
                     throw new RuntimeException(e);
                 }
             }else if(checkKeyDecrypt()) {
@@ -464,8 +541,18 @@ public class Controller {
             if (isFileDecrypt) {
                 getOutputDecryptPath();
                 try {
+                     if (selectedFileDecryptPath.isEmpty() || selectedFileDecryptPath.isBlank()){
+                        showMessageDialog("Please choose another file", "File Choose Dialog", JOptionPane.PLAIN_MESSAGE);
+                        return "";
+                     }
+                    else if (outputDecryptPath.isEmpty() || outputDecryptPath.isBlank()){
+                        showMessageDialog("Please choose another file", "File Choose Dialog", JOptionPane.PLAIN_MESSAGE);
+                        return "";
+                    }
                     rsa.fileDecrypt(selectedFileDecryptPath, outputDecryptPath);
+                    showMessageDialog("Decrypt done", "Decrypt status", JOptionPane.PLAIN_MESSAGE);
                 } catch (Exception e) {
+                    showMessageDialog(e.getMessage(), "Decrypt status", JOptionPane.ERROR_MESSAGE);
                     throw new RuntimeException(e);
                 }
             }else {
@@ -578,23 +665,22 @@ public class Controller {
     }
 
     private void setKeySize(JCheckBox checkbox) {
-
         if (checkbox.getText().equals("AES")) {
-            keySizeOptions = new Integer[]{128, 192, 256};
+            keySizeOptions = new Integer[]{256, 192, 128};
         }
-        if (checkbox.getText().equals("DES")) {
+        else if (checkbox.getText().equals("DES")) {
             keySizeOptions = new Integer[]{56};
         }
-        if (checkbox.getText().equals("Twofish")) {
-            keySizeOptions = new Integer[]{128, 192, 256};
+        else if (checkbox.getText().equals("Twofish")) {
+            keySizeOptions = new Integer[]{256, 192, 128};
         }
 
-        if (checkbox.getText().equals("Serpent")) {
-            keySizeOptions = new Integer[]{128, 192, 256};
+        else if (checkbox.getText().equals("Serpent")) {
+            keySizeOptions = new Integer[]{256, 192, 128};
         }
 
-        if (checkbox.getText().equals("RSA")){
-            keySizeOptions = new Integer[]{1024, 2048, 3072, 4096};
+        else if (checkbox.getText().equals("RSA")){
+            keySizeOptions = new Integer[]{4096, 3072, 2048, 1024};
         }
         else {
             keySizeOptions = new Integer[]{};
@@ -654,11 +740,21 @@ public class Controller {
         }
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         int returnValue = fileChooser.showSaveDialog(null);
+
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             outputPath = fileChooser.getSelectedFile().getAbsolutePath();
         }
+
         if (fileName != null && !fileName.isEmpty()) {
-            outputPath = outputPath + File.separator + fileName;
+            String fileExtension = getFileExtension();
+            String fileEncryptName = fileName.replaceFirst("\\." + fileExtension + "$", "");
+            if (!fileEncryptName.endsWith("_encrypt." + fileExtension)) {
+                fileEncryptName += "_encrypt." + fileExtension;
+            }
+            outputPath = outputPath + File.separator + fileEncryptName;
+        }
+        else {
+            outputPath = "";
         }
     }
 
@@ -670,18 +766,35 @@ public class Controller {
         }
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         int returnValue = fileChooser.showSaveDialog(null);
-        System.out.println(fileNameDecrypt);
+
         if (returnValue == JFileChooser.APPROVE_OPTION) {
-            outputDecryptPath = fileChooser.getSelectedFile().getAbsolutePath();
-            if (fileNameDecrypt != null && !fileNameDecrypt.isEmpty()) {
-                fileNameDecrypt = fileNameDecrypt.replaceFirst("\\.zip$", "");
-                if (!fileNameDecrypt.endsWith("_decrypt.zip")) {
-                    fileNameDecrypt += "_decrypt.zip";
+            File selectedFile = fileChooser.getSelectedFile();
+            if (selectedFile != null) {
+                String fileExtension = getFileExtension();
+                if (fileNameDecrypt != null && !fileNameDecrypt.isEmpty()) {
+                    fileNameDecrypt = fileNameDecrypt.replaceFirst("\\." + fileExtension + "$", "");
+                    if (fileNameDecrypt.indexOf("_encrypt") != -1){
+                        fileNameDecrypt = fileNameDecrypt.replace("_encrypt", "");
+                    }
+                    if (!fileNameDecrypt.endsWith("_decrypt." + fileExtension)) {
+                        fileNameDecrypt += "_decrypt." + fileExtension;
+                    }
+                    outputDecryptPath = selectedFile.getAbsolutePath() + File.separator + fileNameDecrypt;
                 }
-                outputDecryptPath = outputDecryptPath + File.separator + fileNameDecrypt;
             }
         }
-        System.out.println(fileNameDecrypt);
+        else {
+            outputDecryptPath = "";
+        }
+
+    }
+
+    private String getFileExtension() {
+        int lastDotIndex = fileName.lastIndexOf(".");
+        if (lastDotIndex > 0 && lastDotIndex < fileName.length() - 1) {
+            return fileName.substring(lastDotIndex + 1);
+        }
+        return ""; // No file extension found
     }
 
 //    dialog

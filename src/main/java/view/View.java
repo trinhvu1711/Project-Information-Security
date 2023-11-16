@@ -93,7 +93,7 @@ public class View {
             checkBoxAlgorithms1[i] = new JCheckBox(SymmetricEncryption[i]);
             resultFields1[i] = new JTextField(90);
             checkboxToResultFieldMap.put(checkBoxAlgorithms1[i],resultFields1[i]);
-            encryptButtonGroup.add(checkBoxAlgorithms1[i] );
+            encryptButtonGroup.add(checkBoxAlgorithms1[i]);
         }
 
         for (int i = 0; i < SymmetricEncryption.length; i++) {
@@ -139,6 +139,7 @@ public class View {
             checkBoxAlgorithms3[i] = new JCheckBox(HashFunction[i]);
             resultFields3[i] = new JTextField(90);
             checkboxToResultFieldMap.put(checkBoxAlgorithms3[i],resultFields3[i]);
+            encryptButtonGroup.add(checkBoxAlgorithms3[i]);
         }
 
         for (int i = 0; i < HashFunction.length; i++) {
@@ -362,10 +363,6 @@ public class View {
 
     public Map<JCheckBox, JTextField> getCheckboxToResultFieldMap() {
         return checkboxToResultFieldMap;
-    }
-
-    public void setCheckboxToResultFieldMap(Map<JCheckBox, JTextField> checkboxToResultFieldMap) {
-        this.checkboxToResultFieldMap = checkboxToResultFieldMap;
     }
 
     public JTextField getKeyField() {
