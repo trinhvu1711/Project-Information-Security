@@ -4,6 +4,10 @@ import models.*;
 import view.View;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -74,8 +78,15 @@ public class Controller {
         view.getButtonFromClipboard().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Xử lý sự kiện cho buttonFromClipboard ở đây
-                System.out.println("getButtonFromClipboard");
+                Clipboard c = Toolkit.getDefaultToolkit().getSystemClipboard();
+                try {
+                    String data = (String) c.getData(DataFlavor.stringFlavor);
+                    view.getInputField().setText(data);
+                } catch (UnsupportedFlavorException ex) {
+                    throw new RuntimeException(ex);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 
