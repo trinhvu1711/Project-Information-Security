@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -28,7 +29,7 @@ public class Controller {
     String lastSelectedDirectory = "D:\\VuxBaox\\University Document\\Semester 7\\test_attt";
     String selectedFilePath = "";
     String outputPath = "";
-    String selectedFileDecryptPath = "";
+    String selectedFileDecryptPath, selectedFileDSPath = "";
     String outputDecryptPath = "";
     String fileName, fileNameDecrypt;
 
@@ -60,6 +61,24 @@ public class Controller {
                 if (returnValue == JFileChooser.APPROVE_OPTION) {
                     selectedFilePath = fileChooser.getSelectedFile().getAbsolutePath();
                     view.getInputField().setText(selectedFilePath);
+                    lastSelectedDirectory = fileChooser.getSelectedFile().getParent();
+                    fileName = fileChooser.getSelectedFile().getName();
+                }
+            }
+        });
+
+        view.getButtonFromFileDigitalSignature().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser fileChooser = new JFileChooser();
+                if (lastSelectedDirectory != null) {
+                    fileChooser.setCurrentDirectory(new File(lastSelectedDirectory));
+                }
+                int returnValue = fileChooser.showOpenDialog(null);
+
+                if (returnValue == JFileChooser.APPROVE_OPTION) {
+                    selectedFileDSPath = fileChooser.getSelectedFile().getAbsolutePath();
+                    view.getDigitalSignatureInputField().setText(selectedFileDSPath);
                     lastSelectedDirectory = fileChooser.getSelectedFile().getParent();
                     fileName = fileChooser.getSelectedFile().getName();
                 }
@@ -173,7 +192,24 @@ public class Controller {
                         }
                     }
                 }
-
+                else if(selectedTabIndex == 2){
+                    List<JCheckBox> dsCheckboxes = getSelectedDSCheckboxes();
+                    if (dsCheckboxes != null) {
+                        for (JCheckBox jCheckBox:dsCheckboxes) {
+                            String result = null;
+                            try {
+                                result = calculateDSAlgorithm(jCheckBox);
+                            } catch (IOException ex) {
+                                throw new RuntimeException(ex);
+                            }
+                            System.out.println(result);
+                            JTextField resultField = view.getCheckBoxResultDigitalSignatureMap().get(jCheckBox);
+                            if (result != null) {
+                                resultField.setText(result);
+                            }
+                        }
+                    }
+                }
             }
         });
 
@@ -196,6 +232,37 @@ public class Controller {
                     }
                 }
             }
+        });
+
+        //        add even listener for generate key
+        view.getButtonCompareDS().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                List<JCheckBox> dsCheckboxes = getSelectedDSCheckboxes();
+
+                boolean result = false;
+                if (dsCheckboxes != null) {
+                    for (JCheckBox jCheckBox:dsCheckboxes) {
+                        try {
+                            String input = view.getDigitalSignatureOutputField().getText();
+                            result = compareDSAlgorithm(jCheckBox, input);
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                        System.out.println(result);
+                    }
+
+                }
+                if (result) {
+                    showMessageDialog("File is verify", "Checksum result", JOptionPane.PLAIN_MESSAGE);
+
+                }
+                else {
+                    showMessageDialog("File not verify", "Checksum result", JOptionPane.ERROR_MESSAGE);
+                }
+                result =false;
+            }
+
         });
     }
 
@@ -399,6 +466,59 @@ public class Controller {
         return algorithmResult;
     }
 
+    private String calculateDSAlgorithm(JCheckBox checkbox) throws IOException {
+        String algorithmResult = "";
+        if (checkbox.getText().equals("MD5")){
+            algorithmResult = hashFunction.calculateFromFile(selectedFileDSPath, HashFunction.ALGORITHM_MD5);
+        }
+        if (checkbox.getText().equals("SHA1")){
+            algorithmResult = hashFunction.calculateFromFile(selectedFileDSPath, HashFunction.ALGORITHM_SHA1);
+        }
+        if (checkbox.getText().equals("SHA224")){
+            algorithmResult = hashFunction.calculateFromFile(selectedFileDSPath, HashFunction.ALGORITHM_SHA224);
+        }
+        if (checkbox.getText().equals("SHA256")){
+            algorithmResult = hashFunction.calculateFromFile(selectedFileDSPath, HashFunction.ALGORITHM_SHA256);
+        }
+        if (checkbox.getText().equals("SHA384")){
+            algorithmResult = hashFunction.calculateFromFile(selectedFileDSPath, HashFunction.ALGORITHM_SHA384);
+        }
+        if (checkbox.getText().equals("SHA512")){
+            algorithmResult = hashFunction.calculateFromFile(selectedFileDSPath, HashFunction.ALGORITHM_SHA512);
+        }
+
+        return algorithmResult;
+    }
+
+    private boolean compareDSAlgorithm(JCheckBox checkbox, String input) throws IOException {
+        boolean algorithmResult = false;
+        if (checkbox.getText().equals("MD5")){
+            algorithmResult = hashFunction.calculateFromFile(selectedFileDSPath, HashFunction.ALGORITHM_MD5).equals(input);
+            if (algorithmResult) return true;
+        }
+        if (checkbox.getText().equals("SHA1")){
+            algorithmResult = hashFunction.calculateFromFile(selectedFileDSPath, HashFunction.ALGORITHM_SHA1).equals(input);
+            if (algorithmResult) return true;
+        }
+        if (checkbox.getText().equals("SHA224")){
+            algorithmResult = hashFunction.calculateFromFile(selectedFileDSPath, HashFunction.ALGORITHM_SHA224).equals(input);
+            if (algorithmResult) return true;
+        }
+        if (checkbox.getText().equals("SHA256")){
+            algorithmResult = hashFunction.calculateFromFile(selectedFileDSPath, HashFunction.ALGORITHM_SHA256).equals(input);
+            if (algorithmResult) return true;
+        }
+        if (checkbox.getText().equals("SHA384")){
+            algorithmResult = hashFunction.calculateFromFile(selectedFileDSPath, HashFunction.ALGORITHM_SHA384).equals(input);
+            if (algorithmResult) return true;
+        }
+        if (checkbox.getText().equals("SHA512")){
+            algorithmResult = hashFunction.calculateFromFile(selectedFileDSPath, HashFunction.ALGORITHM_SHA512).equals(input);
+            if (algorithmResult) return true;
+        }
+        return false;
+    }
+
 //    add generate key encrypt
     private String generateKey(JCheckBox checkbox) throws NoSuchAlgorithmException {
         // add generate key algorithm
@@ -464,6 +584,18 @@ public class Controller {
         return selectedCheckboxes;
     }
 
+    public List<JCheckBox> getSelectedDSCheckboxes() {
+        ArrayList<JCheckBox> selectedCheckboxes = new ArrayList<>();
+
+        for (Map.Entry<JCheckBox, JTextField> entry : view.getCheckBoxResultDigitalSignatureMap().entrySet()) {
+            JCheckBox checkbox = entry.getKey();
+            if (checkbox.isSelected()) {
+                selectedCheckboxes.add(checkbox);
+            }
+        }
+        return selectedCheckboxes;
+    }
+
     public boolean checkKey(){
         return view.getKeyField().getText().isEmpty() && view.getKeyField().getText() != null && !new File(view.getKeyField().getText()).isFile();
     }
@@ -479,7 +611,7 @@ public class Controller {
             fileChooser.setCurrentDirectory(new File(lastSelectedDirectory));
         }
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        int returnValue = fileChooser.showOpenDialog(null);
+        int returnValue = fileChooser.showSaveDialog(null);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             outputPath = fileChooser.getSelectedFile().getAbsolutePath();
         }
@@ -495,7 +627,7 @@ public class Controller {
             fileChooser.setCurrentDirectory(new File(lastSelectedDirectory));
         }
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        int returnValue = fileChooser.showOpenDialog(null);
+        int returnValue = fileChooser.showSaveDialog(null);
         System.out.println(fileNameDecrypt);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             outputDecryptPath = fileChooser.getSelectedFile().getAbsolutePath();

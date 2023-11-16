@@ -1,8 +1,17 @@
 package models;
 
+import org.bouncycastle.crypto.CipherKeyGenerator;
+import org.bouncycastle.crypto.KeyGenerationParameters;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.math.BigInteger;
+import java.security.*;
+import java.util.HashSet;
+import java.util.Set;
 
 public class VietnameseTextHelper {
     public static final String ALPHABET_VIETNAMESE = "aàáãảạăằắẵẳặâầấẫẩậbcdđeéèẹẽẻêếềệễểghiìíĩỉịklmnoòóõỏọôồốỗổộơờớỡởợpqrstuùúũủụưừứữửựvxyỳýỷỹỵ1234567890 ~!@#$%^&*()-=_+[]{}|;:'\\\",.<>?/";
@@ -108,9 +117,9 @@ public class VietnameseTextHelper {
         }
         return result;
     }
-    public static void main(String[] args) {
-        int[][] data = {{4, 7}, {2, 6}};
-        int[][] reverseModulo = getReverseModulo(data);
-        printMatrix(reverseModulo);
+
+
+
+    public static void main(String[] args) throws NoSuchAlgorithmException, NoSuchProviderException {
     }
 }

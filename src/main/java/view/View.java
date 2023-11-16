@@ -1,10 +1,12 @@
 package view;
 
 import com.formdev.flatlaf.FlatLightLaf;
+import com.formdev.flatlaf.ui.FlatTextBorder;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -15,17 +17,21 @@ import java.util.Map;
 public class View {
     private JFrame frame;
     private JButton buttonFromClipboard, buttonFromClipboardDecrypt;
-    private JButton buttonFromFile, buttonFromFileDecrypt, buttonClose, buttonCalculate,buttonGenerateKey;
+    private JButton buttonFromClipboardDS, buttonCompareDS;
+    private JButton buttonFromFile, buttonFromFileDecrypt, buttonFromFileDigitalSignature, buttonClose, buttonCalculate,buttonGenerateKey;
     private Map<JCheckBox, JTextField> checkboxToResultFieldMap = new HashMap<>();
     private Map<JCheckBox, JTextField> checkBoxResultDecryptMap = new HashMap<>();
+    private Map<JCheckBox, JTextField> checkBoxResultDigitalSignatureMap = new HashMap<>();
     private JTextField inputField, decrypInputField;
     private JTextField keyField, decryptKeyField;
+    private JTextField digitalSignatureInputField, digitalSignatureOutputField;
     private JTabbedPane tabbedPane;
-    private JComboBox<String> comboBoxKeyEncrypt, comboBoxKeyDecrypt, comboBoxInputEncrypt, comboBoxInputDecrypt;
+    private JComboBox<String> comboBoxKeyEncrypt, comboBoxKeyDecrypt, comboBoxInputEncrypt, comboBoxInputDecrypt, comboBoxKeySize;
     String[] keyOptions =  new String[]{"String text", "String hex"};
     String[] inputOptions  = new String[] {"String text", "File"};
     public View(){
         FlatLightLaf.setup();
+
         frame = new JFrame("Encrypt App");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -231,8 +237,56 @@ public class View {
 //        done tab 2
 
 //        start tab 3
+        JPanel inputDigitalSignature = new JPanel(new MigLayout("fillx", "[pref!][grow][pref!]"));
+        Border digitalSignatureBorder = BorderFactory.createTitledBorder("Choose file");
+        inputDigitalSignature.setBorder(BorderFactory.createCompoundBorder(digitalSignatureBorder, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
 
-//        done tab 3
+        digitalSignatureInputField = new JTextField(15);
+        buttonFromFileDigitalSignature = new JButton("From File");
+        inputDigitalSignature.add(new JLabel("File: "));
+        inputDigitalSignature.add(digitalSignatureInputField,"grow, height 30:30:30");
+        inputDigitalSignature.add(buttonFromFileDigitalSignature,"wrap, height 30:30:30");
+
+        JPanel digitalSignaturePanel = new JPanel(new MigLayout("fillx", "[pref!][grow]"));
+        digitalSignaturePanel.setBorder(BorderFactory.createCompoundBorder(border5, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+        JCheckBox[] checkBoxAlgorithmsDigitalSignature = new JCheckBox[HashFunction.length];
+        JTextField[] resultFieldsDigitalSignature = new JTextField[HashFunction.length];
+
+        ButtonGroup digitalSignatureButtonGroup = new ButtonGroup();
+
+        for (int i = 0; i < HashFunction.length; i++) {
+            checkBoxAlgorithmsDigitalSignature[i] = new JCheckBox(HashFunction[i]);
+            resultFieldsDigitalSignature[i] = new JTextField(90);
+            checkBoxResultDigitalSignatureMap.put(checkBoxAlgorithmsDigitalSignature[i],resultFieldsDigitalSignature[i]);
+            digitalSignatureButtonGroup.add(checkBoxAlgorithmsDigitalSignature[i]);
+        }
+
+        for (int i = 0; i < HashFunction.length; i++) {
+            digitalSignaturePanel.add(checkBoxAlgorithmsDigitalSignature[i], "gapright 10");
+            digitalSignaturePanel.add(resultFieldsDigitalSignature[i], "grow");
+            if (i < HashFunction.length -1 ) {
+                digitalSignaturePanel.add(resultFieldsDigitalSignature[i], "grow, wrap");
+            }
+        }
+
+        JPanel verifyPanel = new JPanel(new MigLayout("fillx", "[pref!][grow][pref!][pref!]"));
+        verifyPanel.setBorder(BorderFactory.createCompoundBorder( BorderFactory.createTitledBorder("Compare value to verify"), BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+
+        digitalSignatureOutputField = new JTextField(15);
+        buttonFromClipboardDS = new JButton("From Clipboard");
+        buttonCompareDS = new JButton("Compare");
+        verifyPanel.add(new JLabel("Hash:"));
+        verifyPanel.add(digitalSignatureOutputField,"grow, height 30:30:30");
+        verifyPanel.add(buttonFromClipboardDS,"height 30:30:30");
+        verifyPanel.add(buttonCompareDS,"wrap, height 30:30:30");
+
+        //      set default width for text field
+        for (Map.Entry<JCheckBox, JTextField> entry : checkBoxResultDigitalSignatureMap.entrySet()) {
+            JCheckBox checkBox = entry.getKey();
+            checkBox.setMinimumSize(new Dimension(maxWidth, checkBox.getPreferredSize().height));
+        }
+
+        //        done tab 3
 
 
         // Func panel
@@ -255,6 +309,10 @@ public class View {
         tab2.add(keyPanelDecrypt, "width max(1200), wrap");
         tab2.add(resultPanel4, "width max(1200), wrap");
         tab2.add(resultPanel5, "width max(1200), wrap");
+
+        tab3.add(inputDigitalSignature, "width max(1200), wrap");
+        tab3.add(digitalSignaturePanel, "width max(1200), wrap");
+        tab3.add(verifyPanel, "width max(1200), wrap");
 
         mainPanel.add(tabbedPane, BorderLayout.CENTER);
         mainPanel.add(funcPanel, BorderLayout.SOUTH);
@@ -342,6 +400,30 @@ public class View {
 
     public JComboBox<String> getComboBoxInputDecrypt() {
         return comboBoxInputDecrypt;
+    }
+
+    public JButton getButtonFromFileDigitalSignature() {
+        return buttonFromFileDigitalSignature;
+    }
+
+    public JTextField getDigitalSignatureInputField() {
+        return digitalSignatureInputField;
+    }
+
+    public JButton getButtonFromClipboardDS() {
+        return buttonFromClipboardDS;
+    }
+
+    public JButton getButtonCompareDS() {
+        return buttonCompareDS;
+    }
+
+    public Map<JCheckBox, JTextField> getCheckBoxResultDigitalSignatureMap() {
+        return checkBoxResultDigitalSignatureMap;
+    }
+
+    public JTextField getDigitalSignatureOutputField() {
+        return digitalSignatureOutputField;
     }
 
     public void showPublicPrivateKey(PublicKey publicKey, PrivateKey privateKey){
