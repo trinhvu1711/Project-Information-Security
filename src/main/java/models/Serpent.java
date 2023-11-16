@@ -78,10 +78,10 @@ public class Serpent implements EncryptionAlgorithm {
             System.out.println("Error during decryption: " + e.getMessage());
         }
     }
-    public void generateKey() throws NoSuchAlgorithmException {
+    public void generateKey(int keySize) throws NoSuchAlgorithmException {
         try {
             KeyGenerator keygen = KeyGenerator.getInstance("Serpent", "BC");
-            keygen.init(256); // or your preferred key size
+            keygen.init(keySize);
             key = keygen.generateKey();
         } catch (Exception e) {
             throw new RuntimeException("Error generating Twofish key: " + e.getMessage());
@@ -118,7 +118,7 @@ public class Serpent implements EncryptionAlgorithm {
     }
     public static void main(String[] args) throws NoSuchAlgorithmException {
         Serpent serpent = new Serpent();
-        serpent.generateKey();
+        serpent.generateKey(256);
         System.out.println(serpent.key);
         byte[] keyBytes = serpent.key.getEncoded();
         System.out.println("Key: " + VietnameseTextHelper.bytesToHex(keyBytes));

@@ -18,10 +18,10 @@ public class Twofish implements EncryptionAlgorithm  {
         Security.addProvider(new BouncyCastleProvider());
     }
 
-    public void generateKey() throws NoSuchAlgorithmException {
+    public void generateKey(int keySize) throws NoSuchAlgorithmException {
         try {
             KeyGenerator keygen = KeyGenerator.getInstance("Twofish", "BC");
-            keygen.init(256); // or your preferred key size
+            keygen.init(keySize); // or your preferred key size
             key = keygen.generateKey();
         } catch (Exception e) {
             throw new RuntimeException("Error generating Twofish key: " + e.getMessage());

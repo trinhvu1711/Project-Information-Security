@@ -6,6 +6,8 @@ import view.View;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.File;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
@@ -32,13 +34,28 @@ public class Controller {
     String selectedFileDecryptPath, selectedFileDSPath = "";
     String outputDecryptPath = "";
     String fileName, fileNameDecrypt;
-
+    Integer[] keySizeOptions = new Integer[]{};
     public Controller(View view) {
         this.view = view;
         attachEventListeners();
     }
 
     private void attachEventListeners() {
+        for (Map.Entry<JCheckBox, JTextField> entry : view.getCheckboxToResultFieldMap().entrySet()) {
+            JCheckBox checkbox = entry.getKey();
+            checkbox.addItemListener(new ItemListener() {
+                @Override
+                public void itemStateChanged(ItemEvent e) {
+                    if (checkbox.isSelected()) {
+                        setKeySize(checkbox);
+                        DefaultComboBoxModel<Integer> key = new DefaultComboBoxModel<>(keySizeOptions);
+                        view.getComboBoxKeySize().setEnabled(true);
+                        view.getComboBoxKeySize().setModel(key);
+                    }
+                }
+            });
+        }
+
         // Thêm sự kiện cho buttonFromClipboard
         view.getButtonFromClipboard().addActionListener(new ActionListener() {
             @Override
@@ -141,6 +158,7 @@ public class Controller {
                 }
             }
         });
+
         view.getComboBoxInputDecrypt().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -152,8 +170,6 @@ public class Controller {
                 }
             }
         });
-
-
 //        add event listener for calculate button
         view.getButtonCalculate().addActionListener(new ActionListener() {
             @Override
@@ -164,7 +180,6 @@ public class Controller {
                     String inputText = view.getInputField().getText();
                     String key = view.getKeyField().getText();
                     List<JCheckBox> listCheckBox = getSelectedCheckboxes();
-
                     if (listCheckBox != null) {
                         for (JCheckBox jCheckBox:listCheckBox) {
                             String result = calculateAlgorithm(jCheckBox, inputText, key);
@@ -213,7 +228,7 @@ public class Controller {
             }
         });
 
-//        add even listener for generate key
+//        add even listener for generate key decrypt
         view.getButtonGenerateKey().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -234,7 +249,7 @@ public class Controller {
             }
         });
 
-        //        add even listener for generate key
+        //        add even listener for generate key DS
         view.getButtonCompareDS().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -525,7 +540,8 @@ public class Controller {
         String key = "";
         if (checkbox.getText().equals("AES")) {
             aes = new AESEncryption();
-            aes.generateKey();
+            int keySize = (int) view.getComboBoxKeySize().getSelectedItem();
+            aes.generateKey(keySize);
             key = Base64.getEncoder().encodeToString(aes.getKey().getEncoded());
         }
         if (checkbox.getText().equals("DES")) {
@@ -535,20 +551,23 @@ public class Controller {
         }
         if (checkbox.getText().equals("Twofish")) {
             twofish = new Twofish();
-            twofish.generateKey();
+            int keySize = (int) view.getComboBoxKeySize().getSelectedItem();
+            twofish.generateKey(keySize);
             key = Base64.getEncoder().encodeToString(twofish.getKey().getEncoded());
         }
 
         if (checkbox.getText().equals("Serpent")) {
             serpent= new Serpent();
-            serpent.generateKey();
+            int keySize = (int) view.getComboBoxKeySize().getSelectedItem();
+            serpent.generateKey(keySize);
             key = Base64.getEncoder().encodeToString(serpent.getKey().getEncoded());
         }
 
         if (checkbox.getText().equals("RSA")){
             rsa = new RSA();
+            int keySize = (int) view.getComboBoxKeySize().getSelectedItem();
             try {
-                rsa.generateKey();
+                rsa.generateKey(keySize);
                 key = Base64.getEncoder().encodeToString(rsa.getPrivateKey().getEncoded());
                 view.showPublicPrivateKey(rsa.getPublicKey(), rsa.getPrivateKey());
             } catch (Exception e) {
@@ -558,7 +577,30 @@ public class Controller {
         return key;
     }
 
+    private void setKeySize(JCheckBox checkbox) {
 
+        if (checkbox.getText().equals("AES")) {
+            keySizeOptions = new Integer[]{128, 192, 256};
+        }
+        if (checkbox.getText().equals("DES")) {
+            keySizeOptions = new Integer[]{56};
+        }
+        if (checkbox.getText().equals("Twofish")) {
+            keySizeOptions = new Integer[]{128, 192, 256};
+        }
+
+        if (checkbox.getText().equals("Serpent")) {
+            keySizeOptions = new Integer[]{128, 192, 256};
+        }
+
+        if (checkbox.getText().equals("RSA")){
+            keySizeOptions = new Integer[]{1024, 2048, 3072, 4096};
+        }
+        else {
+            keySizeOptions = new Integer[]{};
+        }
+
+    }
     public List<JCheckBox> getSelectedCheckboxes() {
         ArrayList<JCheckBox> selectedCheckboxes = new ArrayList<>();
 

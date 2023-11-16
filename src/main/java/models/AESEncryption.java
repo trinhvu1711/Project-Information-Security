@@ -18,8 +18,9 @@ public class AESEncryption implements EncryptionAlgorithm{
     private static final String TRANSFORMATION = "AES/CBC/PKCS5Padding";
     private static final byte[] IV = new byte[16];
     private SecretKey key;
-    public void generateKey() throws NoSuchAlgorithmException {
+    public void generateKey(int keySize) throws NoSuchAlgorithmException {
         KeyGenerator keygen = KeyGenerator.getInstance("AES");
+        keygen.init(keySize);
         key = keygen.generateKey();
     }
 

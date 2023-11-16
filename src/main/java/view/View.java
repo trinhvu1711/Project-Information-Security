@@ -26,9 +26,11 @@ public class View {
     private JTextField keyField, decryptKeyField;
     private JTextField digitalSignatureInputField, digitalSignatureOutputField;
     private JTabbedPane tabbedPane;
-    private JComboBox<String> comboBoxKeyEncrypt, comboBoxKeyDecrypt, comboBoxInputEncrypt, comboBoxInputDecrypt, comboBoxKeySize;
+    private JComboBox<String> comboBoxKeyEncrypt, comboBoxKeyDecrypt, comboBoxInputEncrypt, comboBoxInputDecrypt;
+    private JComboBox<Integer> comboBoxKeySize;
     String[] keyOptions =  new String[]{"String text", "String hex"};
     String[] inputOptions  = new String[] {"String text", "File"};
+
     public View(){
         FlatLightLaf.setup();
 
@@ -86,11 +88,12 @@ public class View {
         String[] SymmetricEncryption = new String[] {"Hill", "Vigenere", "Twofish", "Serpent", "DES", "AES"};
         JCheckBox[] checkBoxAlgorithms1 = new JCheckBox[SymmetricEncryption.length];
         JTextField[] resultFields1 = new JTextField[SymmetricEncryption.length];
-
+        ButtonGroup encryptButtonGroup = new ButtonGroup();
         for (int i = 0; i < SymmetricEncryption.length; i++) {
             checkBoxAlgorithms1[i] = new JCheckBox(SymmetricEncryption[i]);
             resultFields1[i] = new JTextField(90);
             checkboxToResultFieldMap.put(checkBoxAlgorithms1[i],resultFields1[i]);
+            encryptButtonGroup.add(checkBoxAlgorithms1[i] );
         }
 
         for (int i = 0; i < SymmetricEncryption.length; i++) {
@@ -113,6 +116,7 @@ public class View {
             checkBoxAlgorithms2[i] = new JCheckBox(AsymmetricEncryption[i]);
             resultFields2[i] = new JTextField(90);
             checkboxToResultFieldMap.put(checkBoxAlgorithms2[i],resultFields2[i]);
+            encryptButtonGroup.add(checkBoxAlgorithms2[i] );
         }
 
         for (int i = 0; i < AsymmetricEncryption.length; i++) {
@@ -188,8 +192,9 @@ public class View {
         JPanel resultPanel4 = new JPanel(new MigLayout("fillx", "[pref!][grow]"));
         Border border6 = BorderFactory.createTitledBorder("Symmetric Encryption");
         resultPanel4.setBorder(BorderFactory.createCompoundBorder(border6, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+        ButtonGroup decryptButtonGroup = new ButtonGroup();
 
-//       SymmetricDecryption
+        //       SymmetricDecryption
         JCheckBox[] checkBoxAlgorithms4 = new JCheckBox[SymmetricEncryption.length];
         JTextField[] resultFields4 = new JTextField[SymmetricEncryption.length];
 
@@ -197,6 +202,7 @@ public class View {
             checkBoxAlgorithms4[i] = new JCheckBox(SymmetricEncryption[i]);
             resultFields4[i] = new JTextField(90);
             checkBoxResultDecryptMap.put(checkBoxAlgorithms4[i],resultFields4[i]);
+            decryptButtonGroup.add(checkBoxAlgorithms4[i]);
         }
 
         for (int i = 0; i < SymmetricEncryption.length; i++) {
@@ -219,6 +225,7 @@ public class View {
             checkBoxAlgorithms5[i] = new JCheckBox(AsymmetricDecryption[i]);
             resultFields5[i] = new JTextField(90);
             checkBoxResultDecryptMap.put(checkBoxAlgorithms5[i],resultFields5[i]);
+            decryptButtonGroup.add(checkBoxAlgorithms5[i]);
         }
 
         for (int i = 0; i < AsymmetricDecryption.length; i++) {
@@ -234,6 +241,7 @@ public class View {
             JCheckBox checkBox = entry.getKey();
             checkBox.setMinimumSize(new Dimension(maxWidth, checkBox.getPreferredSize().height));
         }
+
 //        done tab 2
 
 //        start tab 3
@@ -290,29 +298,35 @@ public class View {
 
 
         // Func panel
-        JPanel funcPanel = new JPanel(new MigLayout("alignx right", "[pref!,pref!,pref!]"));
+        JPanel funcPanel = new JPanel(new MigLayout("alignx right", "[pref!,pref!,pref!,pref!]"));
         buttonGenerateKey = new JButton("Generate Key");
         buttonCalculate = new JButton("Calculate");
         buttonClose = new JButton("Close");
 
+        comboBoxKeySize = new JComboBox<>();
+        comboBoxKeySize.enable(false);
+        comboBoxKeySize.setRenderer(new MyComboBoxRenderer("Key size"));
+        comboBoxKeySize.setSelectedIndex(-1);
+
         funcPanel.add(buttonCalculate);
         funcPanel.add(buttonGenerateKey);
+        funcPanel.add(comboBoxKeySize,"width max(80), grow");
         funcPanel.add(buttonClose);
 
-        tab1.add(inputPanel, "width max(1200), wrap");
-        tab1.add(keyPanel, "width max(1200), wrap");
-        tab1.add(resultPanel1, "width max(1200), wrap");
-        tab1.add(resultPanel2, "width max(1200), wrap");
-        tab1.add(resultPanel3, "width max(1200), wrap");
+        tab1.add(inputPanel, "growx, wrap");
+        tab1.add(keyPanel, "growx, wrap");
+        tab1.add(resultPanel1, "growx, wrap");
+        tab1.add(resultPanel2, "growx, wrap");
+        tab1.add(resultPanel3, "growx, wrap");
 
-        tab2.add(inputDecryptPanel, "width max(1200), wrap");
-        tab2.add(keyPanelDecrypt, "width max(1200), wrap");
-        tab2.add(resultPanel4, "width max(1200), wrap");
-        tab2.add(resultPanel5, "width max(1200), wrap");
+        tab2.add(inputDecryptPanel, "growx, wrap");
+        tab2.add(keyPanelDecrypt, "growx, wrap");
+        tab2.add(resultPanel4, "growx, wrap");
+        tab2.add(resultPanel5, "growx, wrap");
 
-        tab3.add(inputDigitalSignature, "width max(1200), wrap");
-        tab3.add(digitalSignaturePanel, "width max(1200), wrap");
-        tab3.add(verifyPanel, "width max(1200), wrap");
+        tab3.add(inputDigitalSignature, "growx, wrap");
+        tab3.add(digitalSignaturePanel, "growx, wrap");
+        tab3.add(verifyPanel, "growx, wrap");
 
         mainPanel.add(tabbedPane, BorderLayout.CENTER);
         mainPanel.add(funcPanel, BorderLayout.SOUTH);
@@ -320,6 +334,22 @@ public class View {
         frame.setSize(1200, 900);
         frame.add(mainPanel);
         frame.setVisible(true);
+    }
+
+
+    class MyComboBoxRenderer extends JLabel implements ListCellRenderer {
+        private String title;
+
+        public MyComboBoxRenderer(String newTitle) {
+            title = newTitle;
+        }
+
+        @Override
+        public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean hasFocus) {
+            if (index == -1 && value == null) setText(title );
+            else setText(value.toString());
+            return this;
+        }
     }
 
     public JButton getButtonFromClipboard() {
@@ -422,6 +452,10 @@ public class View {
         return checkBoxResultDigitalSignatureMap;
     }
 
+    public JComboBox<Integer> getComboBoxKeySize() {
+        return comboBoxKeySize;
+    }
+
     public JTextField getDigitalSignatureOutputField() {
         return digitalSignatureOutputField;
     }
@@ -441,4 +475,5 @@ public class View {
 
         JOptionPane.showMessageDialog(frame, myPanel,"Public Key and Private Key", JOptionPane.PLAIN_MESSAGE );
     }
+
 }

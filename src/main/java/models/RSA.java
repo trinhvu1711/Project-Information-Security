@@ -16,9 +16,9 @@ public class RSA implements EncryptionAlgorithm{
     private PublicKey publicKey;
     private PrivateKey privateKey;
 
-    public void generateKey() throws Exception{
+    public void generateKey(int keysize) throws Exception{
         KeyPairGenerator keyGenerator = KeyPairGenerator.getInstance("RSA");
-        keyGenerator.initialize(2048);
+        keyGenerator.initialize(keysize);
         keyPair = keyGenerator.generateKeyPair();
         publicKey = keyPair.getPublic();
         privateKey = keyPair.getPrivate();
@@ -144,7 +144,7 @@ public class RSA implements EncryptionAlgorithm{
     public static void main(String[] args) throws Exception{
         String test = "trinhvu";
         RSA rsa = new RSA();
-        rsa.generateKey();
+        rsa.generateKey(1024);
         System.out.println("public key : \n"+ Base64.getEncoder().encodeToString(rsa.publicKey.getEncoded()));
         System.out.println("private key : \n"+ Base64.getEncoder().encodeToString(rsa.privateKey.getEncoded()));
         String encrypt = rsa.calculate(test);
