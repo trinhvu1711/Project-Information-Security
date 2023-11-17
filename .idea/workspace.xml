@@ -7,6 +7,9 @@
     <list default="true" id="9c5e09be-f359-4870-b622-a58a8bf4542a" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/controller/Controller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controller/Controller.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/models/Hill.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/Hill.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/models/VietnameseTextHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/VietnameseTextHelper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/view/View.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/View.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -132,8 +135,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.VietnameseTextHelper" />
         <item itemvalue="Application.DESEncryption" />
+        <item itemvalue="Application.VietnameseTextHelper" />
         <item itemvalue="Application.Hill" />
         <item itemvalue="Application.VigenereCipher" />
         <item itemvalue="Application.ModMatrix" />
@@ -172,6 +175,7 @@
       <workItem from="1700016400595" duration="32745000" />
       <workItem from="1700096407747" duration="10868000" />
       <workItem from="1700118370835" duration="24553000" />
+      <workItem from="1700183521546" duration="5968000" />
     </task>
     <servers />
   </component>

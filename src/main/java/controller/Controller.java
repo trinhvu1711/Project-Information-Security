@@ -30,8 +30,6 @@ public class Controller {
     HashFunction hashFunction = new HashFunction();
     boolean isFileEncrypt = false;
     boolean isFileDecrypt = false;
-    boolean isHexKeyEncrypt, isHexKeyDecrypt = false;
-
     String lastSelectedDirectory = "D:\\VuxBaox\\University Document\\Semester 7\\test_attt";
     String selectedFilePath = "";
     String outputPath = "";
@@ -39,10 +37,12 @@ public class Controller {
     String outputDecryptPath = "";
     String fileName, fileNameDecrypt;
     Integer[] keySizeOptions = new Integer[]{};
+    int[][] keyArrayEncrypt, keyArrayDecrypt;
     public Controller(View view) {
         this.view = view;
         attachEventListeners();
     }
+
 
     private void attachEventListeners() {
         for (Map.Entry<JCheckBox, JTextField> entry : view.getCheckboxToResultFieldMap().entrySet()) {
@@ -166,24 +166,20 @@ public class Controller {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String selectedValue = (String) view.getComboBoxKeyEncrypt().getSelectedItem();
-                if (selectedValue.equals("String hex")){
-                    isHexKeyEncrypt = true;
+                if (selectedValue.equals("Array (for Hill)")){
+                  view.getKeyField().setText(view.showEnterArrayKey());
                 }
-                else {
-                    isHexKeyEncrypt = false;
-                }
+
             }
         });
         view.getComboBoxKeyDecrypt().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String selectedValue = (String) view.getComboBoxKeyDecrypt().getSelectedItem();
-                if (selectedValue.equals("String hex")){
-                    isHexKeyDecrypt = true;
+                if (selectedValue.equals("Array (for Hill)")){
+                    view.getDecryptKeyField().setText(view.showEnterArrayKey());
                 }
-                else {
-                    isHexKeyDecrypt = false;
-                }
+
             }
         });
 
@@ -228,6 +224,7 @@ public class Controller {
 //                    decrypt define
                     String inputTextDes = view.getDecrypInputField().getText();
                     String decryptKey = view.getDecryptKeyField().getText();
+                    System.out.println(decryptKey);
                     List<JCheckBox> listDecryptCheckBox = getSelectedDecryptCheckboxes();
 //                System.out.println(listDecryptCheckBox);
                     if (listDecryptCheckBox != null) {
@@ -337,7 +334,11 @@ public class Controller {
             algorithmResult = new VigenereCipher(key).calculate(inputText);
         }
         if (checkbox.getText().equals("Hill")) {
-            algorithmResult = new Hill(Hill.getKeyMatrix(key)).calculate(inputText);
+//            algorithmResult = new Hill(Hill.getKeyMatrix(key)).calculate(inputText);
+            keyArrayEncrypt = VietnameseTextHelper.convertStringToArray(key);
+            Hill hill = new Hill();
+            hill.setKeyMatrix(keyArrayEncrypt);
+            algorithmResult = hill.calculate(inputText);
         }
 
         if (checkbox.getText().equals("Twofish")) {
@@ -351,7 +352,13 @@ public class Controller {
                     throw new RuntimeException(e);
                 }
             }else{
-                algorithmResult = twofish.calculate(inputText);
+                try {
+                    algorithmResult = twofish.calculate(inputText);
+                }
+                catch(Exception e) {
+                    showMessageDialog(e.getMessage(), "Encrypt status", JOptionPane.ERROR_MESSAGE);
+                    throw new RuntimeException(e);
+                }
             }
         }
         if (checkbox.getText().equals("Serpent")) {
@@ -365,7 +372,14 @@ public class Controller {
                     throw new RuntimeException(e);
                 }
             }else{
-                algorithmResult =serpent.calculate(inputText);
+                try {
+                    algorithmResult =serpent.calculate(inputText);
+                }
+                catch(Exception e) {
+                    showMessageDialog(e.getMessage(), "Encrypt status", JOptionPane.ERROR_MESSAGE);
+                    throw new RuntimeException(e);
+                }
+
             }
 
         }
@@ -380,7 +394,13 @@ public class Controller {
                     throw new RuntimeException(e);
                 }
             }else{
-                algorithmResult = des.calculate(inputText);
+                try {
+                    algorithmResult = des.calculate(inputText);
+                }
+                catch(Exception e) {
+                    showMessageDialog(e.getMessage(), "Encrypt status", JOptionPane.ERROR_MESSAGE);
+                    throw new RuntimeException(e);
+                }
             }
 
         }
@@ -395,7 +415,13 @@ public class Controller {
                     throw new RuntimeException(e);
                 }
             }else{
-                algorithmResult = aes.calculate(inputText);
+                try {
+                    algorithmResult = aes.calculate(inputText);
+                }
+                catch(Exception e) {
+                    showMessageDialog(e.getMessage(), "Encrypt status", JOptionPane.ERROR_MESSAGE);
+                    throw new RuntimeException(e);
+                }
             }
 
         }
@@ -411,7 +437,13 @@ public class Controller {
 
                 }
             }else{
-                algorithmResult = rsa.calculate(inputText);
+                try {
+                    algorithmResult = rsa.calculate(inputText);
+                }
+                catch(Exception e) {
+                    showMessageDialog(e.getMessage(), "Encrypt status", JOptionPane.ERROR_MESSAGE);
+                    throw new RuntimeException(e);
+                }
             }
 
         }
@@ -448,7 +480,16 @@ public class Controller {
             algorithmResult = new VigenereCipher(key).decrypt(inputText);
         }
         if (checkbox.getText().equals("Hill")) {
-            algorithmResult = new Hill(Hill.getKeyMatrix(key)).decrypt(inputText).replaceAll("/", "");
+           try {
+               keyArrayDecrypt = VietnameseTextHelper.convertStringToArray(key);
+               Hill hill = new Hill();
+               hill.setKeyMatrix(keyArrayDecrypt);
+               algorithmResult = hill.decrypt(inputText).replaceAll("/", "");
+           }
+           catch (Exception e){
+               showMessageDialog(e.getMessage(), "Hill Decryption info", JOptionPane.PLAIN_MESSAGE);
+               throw new RuntimeException(e);
+           }
         }
 
         if (checkbox.getText().equals("Twofish")) {

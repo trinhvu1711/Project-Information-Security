@@ -92,6 +92,7 @@ public class VietnameseTextHelper {
             }
             System.out.println();
         }
+
     }
     public static BigInteger[][] addItem(int [][] arr){
         BigInteger[][] key = new BigInteger[arr.length][arr.length];
@@ -117,8 +118,22 @@ public class VietnameseTextHelper {
         return result;
     }
 
+    public static int[][] convertStringToArray(String input) {
+        String cleanedInput = input.replaceAll("[^\\d,]+", "");
+        String[] values = cleanedInput.split(",");
+        int[][] result = new int[3][3];
+        int index = 0;
+        for (int i = 0; i < result.length; i++) {
+            for (int j = 0; j < result[i].length; j++) {
+                result[i][j] = Integer.parseInt(values[index]);
+                index++;
+            }
+        }
 
+        return result;
+    }
 
     public static void main(String[] args) throws NoSuchAlgorithmException, NoSuchProviderException {
+
     }
 }

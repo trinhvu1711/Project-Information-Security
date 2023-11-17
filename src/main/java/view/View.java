@@ -1,13 +1,15 @@
 package view;
 
 import com.formdev.flatlaf.FlatLightLaf;
-import com.formdev.flatlaf.ui.FlatTextBorder;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 import javax.swing.border.Border;
-import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.Base64;
@@ -28,7 +30,7 @@ public class View {
     private JTabbedPane tabbedPane;
     private JComboBox<String> comboBoxKeyEncrypt, comboBoxKeyDecrypt, comboBoxInputEncrypt, comboBoxInputDecrypt;
     private JComboBox<Integer> comboBoxKeySize;
-    String[] keyOptions =  new String[]{"String text", "String hex"};
+    String[] keyOptions =  new String[]{"String text", "Array (for Hill)"};
     String[] inputOptions  = new String[] {"String text", "File"};
 
     public View(){
@@ -36,7 +38,6 @@ public class View {
 
         frame = new JFrame("Encrypt App");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
         JPanel mainPanel = new JPanel(new BorderLayout());
 
         tabbedPane = new JTabbedPane();
@@ -460,17 +461,77 @@ public class View {
     public void showPublicPrivateKey(PublicKey publicKey, PrivateKey privateKey){
         JTextField xField = new JTextField();
         JTextField yField = new JTextField();
+        JButton copyKey1 = new JButton("Copy");
+        JButton copyKey2 = new JButton("Copy");
         JPanel myPanel = new JPanel(new MigLayout());
-
+        copyKey1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String myString = xField.getText();
+                StringSelection stringSelection = new StringSelection(myString);
+                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                clipboard.setContents(stringSelection, null);
+            }
+        });
+        copyKey2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String myString = yField.getText();
+                StringSelection stringSelection = new StringSelection(myString);
+                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                clipboard.setContents(stringSelection, null);
+            }
+        });
         xField.setText(Base64.getEncoder().encodeToString(publicKey.getEncoded()));
         yField.setText(Base64.getEncoder().encodeToString(privateKey.getEncoded()));
 
         myPanel.add(new JLabel("Public key:"));
-        myPanel.add(xField, "width 100:1000, growx, wrap");
+        myPanel.add(xField, "width 100:1000, growx");
+        myPanel.add(copyKey1, "wrap");
+
         myPanel.add(new JLabel("Private key:"));
-        myPanel.add(yField, "width 100:1000, growx, wrap");
+        myPanel.add(yField, "width 100:1000, growx");
+        myPanel.add(copyKey2, "wrap");
 
         JOptionPane.showMessageDialog(frame, myPanel,"Public Key and Private Key", JOptionPane.PLAIN_MESSAGE );
+    }
+
+    public String showEnterArrayKey(){
+        int[][] key = new int[3][3];
+        JTextField[][] textFields = new JTextField[3][3];
+        JPanel myPanel = new JPanel(new MigLayout());
+        for (int row = 0; row < 3; row++) {
+            for (int col = 0; col < 3; col++) {
+                textFields[row][col] = new JTextField();
+                if (col == 2){
+                    myPanel.add(textFields[row][col], "width 50:50, growx, wrap");
+                }else {
+                    myPanel.add(textFields[row][col], "width 50:50, growx");
+                }
+            }
+        }
+        int result = JOptionPane.showConfirmDialog(frame, myPanel, "Add key type array", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+        StringBuilder arrayAsString = new StringBuilder("{");
+        if (result == JOptionPane.OK_OPTION) {
+            for (int row = 0; row < 3; row++) {
+                arrayAsString.append("{");
+                for (int col = 0; col < 3; col++) {
+                    String value_string = textFields[row][col].getText();
+                    int value = Integer.valueOf(value_string);
+                    arrayAsString.append(value);
+                    key[row][col] = value;
+                    if (col < 2) {
+                        arrayAsString.append(",");
+                    }
+                }
+                arrayAsString.append("}");
+                if (row < 2) {
+                    arrayAsString.append(", ");
+                }
+            }
+            arrayAsString.append("}");
+        }
+        return arrayAsString.toString();
     }
 
 }
