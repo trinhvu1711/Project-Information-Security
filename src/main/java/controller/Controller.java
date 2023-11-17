@@ -148,7 +148,12 @@ public class Controller {
                 }
             }
         });
-
+        view.getViewKeyRSA().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                view.showPublicPrivateKey(rsa.getPublicKey(), rsa.getPrivateKey());
+            }
+        });
         // Thêm sự kiện cho comboBox
         view.getComboBoxInputEncrypt().addActionListener(new ActionListener() {
             @Override
@@ -167,7 +172,7 @@ public class Controller {
             public void actionPerformed(ActionEvent e) {
                 String selectedValue = (String) view.getComboBoxKeyEncrypt().getSelectedItem();
                 if (selectedValue.equals("Array (for Hill)")){
-                  view.getKeyField().setText(view.showEnterArrayKey());
+                    view.getKeyField().setText(view.showEnterArrayKey());
                 }
 
             }
@@ -320,7 +325,7 @@ public class Controller {
         });
     }
 
-//    add Algorithm Encrypt event
+    //    add Algorithm Encrypt event
     private String calculateAlgorithm(JCheckBox checkbox, String inputText, String key) {
         String algorithmResult = "";
 //        if(key == null || key.isEmpty()) {
@@ -480,16 +485,16 @@ public class Controller {
             algorithmResult = new VigenereCipher(key).decrypt(inputText);
         }
         if (checkbox.getText().equals("Hill")) {
-           try {
-               keyArrayDecrypt = VietnameseTextHelper.convertStringToArray(key);
-               Hill hill = new Hill();
-               hill.setKeyMatrix(keyArrayDecrypt);
-               algorithmResult = hill.decrypt(inputText).replaceAll("/", "");
-           }
-           catch (Exception e){
-               showMessageDialog(e.getMessage(), "Hill Decryption info", JOptionPane.PLAIN_MESSAGE);
-               throw new RuntimeException(e);
-           }
+            try {
+                keyArrayDecrypt = VietnameseTextHelper.convertStringToArray(key);
+                Hill hill = new Hill();
+                hill.setKeyMatrix(keyArrayDecrypt);
+                algorithmResult = hill.decrypt(inputText).replaceAll("/", "");
+            }
+            catch (Exception e){
+                showMessageDialog(e.getMessage(), "Hill Decryption info", JOptionPane.PLAIN_MESSAGE);
+                throw new RuntimeException(e);
+            }
         }
 
         if (checkbox.getText().equals("Twofish")) {
@@ -497,10 +502,10 @@ public class Controller {
             if (isFileDecrypt){
                 getOutputDecryptPath();
                 try {
-                     if (selectedFileDecryptPath.isEmpty() || selectedFileDecryptPath.isBlank()){
+                    if (selectedFileDecryptPath.isEmpty() || selectedFileDecryptPath.isBlank()){
                         showMessageDialog("Please choose another file", "File Choose Dialog", JOptionPane.PLAIN_MESSAGE);
                         return "";
-                     }
+                    }
                     else if (outputDecryptPath.isEmpty() || outputDecryptPath.isBlank()){
                         showMessageDialog("Please choose another file", "File Choose Dialog", JOptionPane.PLAIN_MESSAGE);
                         return "";
@@ -522,10 +527,10 @@ public class Controller {
             if (isFileDecrypt){
                 getOutputDecryptPath();
                 try {
-                     if (selectedFileDecryptPath.isEmpty() || selectedFileDecryptPath.isBlank()){
+                    if (selectedFileDecryptPath.isEmpty() || selectedFileDecryptPath.isBlank()){
                         showMessageDialog("Please choose another file", "File Choose Dialog", JOptionPane.PLAIN_MESSAGE);
                         return "";
-                     }
+                    }
                     else if (outputDecryptPath.isEmpty() || outputDecryptPath.isBlank()){
                         showMessageDialog("Please choose another file", "File Choose Dialog", JOptionPane.PLAIN_MESSAGE);
                         return "";
@@ -546,10 +551,10 @@ public class Controller {
             if (isFileDecrypt){
                 getOutputDecryptPath();
                 try {
-                     if (selectedFileDecryptPath.isEmpty() || selectedFileDecryptPath.isBlank()){
+                    if (selectedFileDecryptPath.isEmpty() || selectedFileDecryptPath.isBlank()){
                         showMessageDialog("Please choose another file", "File Choose Dialog", JOptionPane.PLAIN_MESSAGE);
                         return "";
-                     }
+                    }
                     else if (outputDecryptPath.isEmpty() || outputDecryptPath.isBlank()){
                         showMessageDialog("Please choose another file", "File Choose Dialog", JOptionPane.PLAIN_MESSAGE);
                         return "";
@@ -569,10 +574,10 @@ public class Controller {
             if (isFileDecrypt){
                 getOutputDecryptPath();
                 try {
-                     if (selectedFileDecryptPath.isEmpty() || selectedFileDecryptPath.isBlank()){
+                    if (selectedFileDecryptPath.isEmpty() || selectedFileDecryptPath.isBlank()){
                         showMessageDialog("Please choose another file", "File Choose Dialog", JOptionPane.PLAIN_MESSAGE);
                         return "";
-                     }
+                    }
                     else if (outputDecryptPath.isEmpty() || outputDecryptPath.isBlank()){
                         showMessageDialog("Please choose another file", "File Choose Dialog", JOptionPane.PLAIN_MESSAGE);
                         return "";
@@ -593,10 +598,10 @@ public class Controller {
             if (isFileDecrypt) {
                 getOutputDecryptPath();
                 try {
-                     if (selectedFileDecryptPath.isEmpty() || selectedFileDecryptPath.isBlank()){
+                    if (selectedFileDecryptPath.isEmpty() || selectedFileDecryptPath.isBlank()){
                         showMessageDialog("Please choose another file", "File Choose Dialog", JOptionPane.PLAIN_MESSAGE);
                         return "";
-                     }
+                    }
                     else if (outputDecryptPath.isEmpty() || outputDecryptPath.isBlank()){
                         showMessageDialog("Please choose another file", "File Choose Dialog", JOptionPane.PLAIN_MESSAGE);
                         return "";
@@ -673,7 +678,7 @@ public class Controller {
         return false;
     }
 
-//    add generate key encrypt
+    //    add generate key encrypt
     private String generateKey(JCheckBox checkbox) throws NoSuchAlgorithmException {
         // add generate key algorithm
         String key = "";
@@ -810,7 +815,7 @@ public class Controller {
         }
     }
 
-//    file path for decrypt output
+    //    file path for decrypt output
     public void getOutputDecryptPath(){
         JFileChooser fileChooser = new JFileChooser();
         if (lastSelectedDirectory != null) {
@@ -849,7 +854,7 @@ public class Controller {
         return ""; // No file extension found
     }
 
-//    dialog
+    //    dialog
     public static void showMessageDialog(String message, String title, int messageType) {
         JOptionPane.showMessageDialog(null, message, title, messageType);
     }

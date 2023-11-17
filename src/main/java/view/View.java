@@ -20,7 +20,7 @@ public class View {
     private JFrame frame;
     private JButton buttonFromClipboard, buttonFromClipboardDecrypt;
     private JButton buttonFromClipboardDS, buttonCompareDS;
-    private JButton buttonFromFile, buttonFromFileDecrypt, buttonFromFileDigitalSignature, buttonClose, buttonCalculate,buttonGenerateKey;
+    private JButton buttonFromFile, buttonFromFileDecrypt, buttonFromFileDigitalSignature, buttonClose, buttonCalculate,buttonGenerateKey, viewKeyRSA;
     private Map<JCheckBox, JTextField> checkboxToResultFieldMap = new HashMap<>();
     private Map<JCheckBox, JTextField> checkBoxResultDecryptMap = new HashMap<>();
     private Map<JCheckBox, JTextField> checkBoxResultDigitalSignatureMap = new HashMap<>();
@@ -112,20 +112,21 @@ public class View {
         String[] AsymmetricEncryption = new String[] {"RSA"};
         JCheckBox[] checkBoxAlgorithms2 = new JCheckBox[AsymmetricEncryption.length];
         JTextField[] resultFields2 = new JTextField[AsymmetricEncryption.length];
-
+        viewKeyRSA = new JButton("View key");
         for (int i = 0; i < AsymmetricEncryption.length; i++) {
             checkBoxAlgorithms2[i] = new JCheckBox(AsymmetricEncryption[i]);
             resultFields2[i] = new JTextField(90);
             checkboxToResultFieldMap.put(checkBoxAlgorithms2[i],resultFields2[i]);
-            encryptButtonGroup.add(checkBoxAlgorithms2[i] );
+            encryptButtonGroup.add(checkBoxAlgorithms2[i]);
         }
 
         for (int i = 0; i < AsymmetricEncryption.length; i++) {
             resultPanel2.add(checkBoxAlgorithms2[i], "gapright 10");
             resultPanel2.add(resultFields2[i], "grow");
-            if (i < AsymmetricEncryption.length -1 ) {
-                resultPanel2.add(resultFields2[i], "grow, wrap");
-            }
+            resultPanel2.add(viewKeyRSA, "grow, wrap");
+//            if (i < AsymmetricEncryption.length -1 ) {
+//                resultPanel2.add(resultFields2[i], "grow, wrap");
+//            }
         }
 
 //           Result panel 3
@@ -453,9 +454,12 @@ public class View {
     public JComboBox<Integer> getComboBoxKeySize() {
         return comboBoxKeySize;
     }
-
     public JTextField getDigitalSignatureOutputField() {
         return digitalSignatureOutputField;
+    }
+
+    public JButton getViewKeyRSA() {
+        return viewKeyRSA;
     }
 
     public void showPublicPrivateKey(PublicKey publicKey, PrivateKey privateKey){
